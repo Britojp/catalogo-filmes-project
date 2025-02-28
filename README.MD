@@ -35,6 +35,8 @@ git clone https://github.com/seu-usuario/vue-movie-finder.git
 Para interagir com a API do TMDB, você precisa de uma chave de API. Siga os passos abaixo:
 
 Crie uma conta no TMDB: https://www.themoviedb.org/
+
 Crie uma chave de API: https://www.themoviedb.org/settings/api
+
 Depois de obter sua chave de API, crie um arquivo .env na raiz do projeto e adicione a chave da seguinte forma:
 VUE_APP_TMDB_API_KEY=sua-chave-da-api
