@@ -14,4 +14,7 @@ a{
   text-decoration: none;
   color: white
 }
+h3{
+  font-weight: normal;
+}
 </style>

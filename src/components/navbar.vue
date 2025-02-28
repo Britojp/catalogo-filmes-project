@@ -1,8 +1,11 @@
 <template>
   <v-app-bar :elevation="5">
     <template #prepend />
-    <v-app-bar-nav-icon></v-app-bar-nav-icon>
-    <v-btn icon="mdi-home" href="/"></v-btn>
+    <v-app-bar-nav-icon />
+    <v-btn
+      icon="mdi-home"
+      href="/"
+    />
     <v-app-bar-title>Catálogo de filmes - Norven</v-app-bar-title>
 
     <template #append>
