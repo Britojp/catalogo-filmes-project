@@ -25,5 +25,19 @@ export const getMostPopularMovies = async (page: number = 1) => {
             console.error('Erro ao buscar filmes populares:', error);
             throw new Error('Erro ao buscar filmes populares');
   }
+};
+export const getMostPopularSeries = async (page: number = 1) => {
   
+  try{
+      const response = await axiosInstance.get('/tv/popular', {
+        params: {
+              page
+          }
+      });
+      
+      return response.data;
+      } catch (error) {
+          console.error('Erro ao buscar séries populares:', error);
+          throw new Error('Erro ao buscar séries populares');
+}
 };
