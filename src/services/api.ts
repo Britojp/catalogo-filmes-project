@@ -50,7 +50,10 @@ export const getAllMovies = async (page: number = 1) => {
         }
     });
     
-    return response.data;
+    return{ 
+      data: response.data,
+      total_pages: response.data.total_pages,
+    };
     } catch (error) {
         console.error('Erro ao buscar todos os filmes:', error);
         throw new Error('Erro ao buscar os filmes');

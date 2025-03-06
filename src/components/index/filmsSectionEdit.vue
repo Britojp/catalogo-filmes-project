@@ -4,14 +4,17 @@
     <v-card
       class="mx-auto"
       max-width="425"
-    >
+      >
       <v-list lines="three">
-        <v-list-subheader>Today</v-list-subheader>
-  
+        <v-list-subheader>Filmes</v-list-subheader>
+        
         <template v-for="film in films" :key="film.id">
+          <img 
+            :src="film.poster_path ? `https://image.tmdb.org/t/p/w500${film.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'" 
+            alt=""
+              >
 
             <v-list-item
-            :prepend-avatar="film.poster_path ? `https://image.tmdb.org/t/p/w500${film.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'"
             :title="film.title"
             >
             <template v-slot:subtitle>
@@ -23,17 +26,11 @@
         
     </template>
     <v-divider inset></v-divider>
-    </v-list>
-    </v-card>
-        
-        <v-pagination 
-        :length="total_pages"
-        show-first-last-page
-        total-visible="5"
-        v-model="currentPage"
-        @input="onPageChange()"
-        ></v-pagination>
-</template>
+</v-list>
+</v-card>
+    
+<v-pagination :length="total_pages"></v-pagination>
+  </template>
 
 
 <script lang="ts">
@@ -47,18 +44,13 @@
         return{
         films : [] as Film[],
         total_pages : 1,
-        currentPage: 1,
+        actual_page: 1,
     }
 },
     methods : {
         async loadAllFilms() {
       try {
-        const data: { 
-            data: { 
-            results: Film[] 
-        }, 
-        total_pages: number 
-    } = await getAllMovies(this.currentPage);
+        const data = await getAllMovies(this.actual_page);
         this.films = data.data.results;
         this.total_pages = data.total_pages;
         console.log(this.films);
@@ -69,11 +61,6 @@
     },
     mounted(){
         this.loadAllFilms();
-    },
-    watch: {
-        currentPage() {
-            this.loadAllFilms();
-        }
     }
 }
 

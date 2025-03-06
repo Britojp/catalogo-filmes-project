@@ -1,6 +1,7 @@
 export default interface Film {
     backdrop_path: string,
     genre_ids: [],
+    genres: [],
     id: number,
     original_language: string,
     overview: string,
@@ -11,5 +12,5 @@ export default interface Film {
     name ?: string,
     vote_average: number,
     vote_count: number,
-  
+    
   }
