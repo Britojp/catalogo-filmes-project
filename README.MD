@@ -30,6 +30,12 @@ Antes de rodar o projeto, você precisa ter as seguintes ferramentas instaladas:
 git clone https://github.com/seu-usuario/vue-movie-finder.git
 ```
 
+### 2. Instalar as dependências
+
+```bash
+npm install
+```
+
 ## Configure a chave API do TMDB
 
 Para interagir com a API do TMDB, você precisa de uma chave de API. Siga os passos abaixo:
