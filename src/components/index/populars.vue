@@ -29,7 +29,7 @@
                     contained
                     >
                   <v-card-text>
-                    <h2 class="text-h6 text-primary">{{ items.title }}</h2>
+                    <h2 class="text-h6 text-primary">{{ items.title || items.name }}</h2>
                     <p>
                       {{ expanded.has(items.id) ? items.overview : truncatedText(items) }}
                     </p>
@@ -127,7 +127,7 @@ export default {
 
 .populars {
   text-align: center;
-  padding: 5%;
+  padding: 0 0 0 ;
 }
 
 .container:hover{

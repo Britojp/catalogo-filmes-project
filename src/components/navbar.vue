@@ -1,26 +1,35 @@
 <template>
   <v-app-bar :elevation="5">
     <template #prepend />
-    <v-app-bar-nav-icon />
-    <v-btn
-      icon="mdi-home"
-      href="/"
-    />
-    <v-app-bar-title>Catálogo de filmes - Norven</v-app-bar-title>
+    <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"/>
+    <v-btn>
+        <router-link to="/">
+          <v-icon>mdi-home</v-icon>
+        </router-link>
+      </v-btn>
 
-    <template #append>
-      <v-btn>
-        <router-link to="/films">
-          Filmes
-        </router-link>
-      </v-btn>
-      <v-btn>
-        <router-link to="/series">
-          Séries
-        </router-link>
-      </v-btn>
+      <v-app-bar-title>Catálogo de filmes - Norven</v-app-bar-title>
+
+
+
+    </v-app-bar>
+    
+      <v-navigation-drawer
+      v-model="drawer"
+      :location="$vuetify.display.mobile ? 'bottom' : undefined"
+      temporary
+      >
+      
+    <template v-for="item in items" :key="item.router">
+      <router-link :to="`/${item.router}`">
+        <v-list-item>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </router-link>
+    </template>
+    
       <v-btn 
-        icon="mdi-magnify"
+      icon="mdi-magnify"
         @click="showInput"
       />
       <v-text-field 
@@ -31,9 +40,10 @@
         flat
         clearable
         active
-      />
-    </template>
-  </v-app-bar>
+        />
+    </v-navigation-drawer>
+
+
 </template>
 
 <script lang="ts">
@@ -43,6 +53,24 @@ export default {
   data() {
     return {
       isClicked: false,
+      drawer: false,
+      items: [
+        {
+          title: 'Home',
+          router: '/',
+          value: 'Home',
+        },
+        {
+          title: 'Filmes',
+          router: 'films',
+          value: 'Filmes',
+        },
+        {
+          title: 'Séries',
+          router: 'series',
+          value: 'Séries',
+        },
+      ],
     }
   },
   methods: {

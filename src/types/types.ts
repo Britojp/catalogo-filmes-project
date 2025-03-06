@@ -7,7 +7,8 @@ export default interface Film {
     popularity: number,
     poster_path: string,
     release_date: string,
-    title : string,
+    title ?: string,
+    name ?: string,
     vote_average: number,
     vote_count: number,
   

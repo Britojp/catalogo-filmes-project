@@ -1,7 +1,7 @@
 <template>
 
-<Populars title="Filmes Famosos" description="lorem" :populars="popularsFilms"/>
-<Populars title="Séries Famosas" description="lorem" :populars="popularsTV" />
+<Populars title="Filmes Famosos" description="Confira os filmes mais populares do momento" :populars="popularsFilms"/>
+<Populars title="Séries Famosas" description="Descubra as séries mais assistidas atualmente" :populars="popularsTV" />
 
 </template>
 
