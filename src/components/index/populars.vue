@@ -4,9 +4,7 @@
     <h3>
       {{ description }}
     </h3>
-  </v-container>
-
-  <div class="d-flex flex-row mb-6">
+  <div class="d-flex flex-row mt-6">
     <template v-if="populars.length">
       <v-carousel
         v-model="currentSlide"
@@ -18,12 +16,18 @@
       >
         <v-carousel-item v-for="(group, index) in groupedFilms" :key="index">
           <v-row class="d-flex justify-center">
-            <v-col v-for="items in group" :key="items.id" cols="10" md="2" sm="3">
-              <v-hover v-slot="{ props }">
-                <v-card max-width="344" v-bind="props" class="ma-2 pa-2 mx-auto">
+            <v-col v-for="items in group" :key="items.id" cols="10" md="3" sm="3">
+              <v-hover v-slot="{ isHovering, props }">
+                <v-card max-width="344" class="ma-2 pa-2 mx-auto" width="100%" v-bind="props">
                   <v-img
-                    :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.backdrop_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'"
+                    :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'"
                   />
+                  <v-overlay
+                    :model-value="!!isHovering"
+                    class="align-center justify-center container"
+                    scrim="#000000"
+                    contained
+                    >
                   <v-card-text>
                     <h2 class="text-h6 text-primary">{{ items.title }}</h2>
                     <p>
@@ -48,6 +52,7 @@
                       readonly
                     />
                   </v-card-title>
+                </v-overlay>
                 </v-card>
               </v-hover>
             </v-col>
@@ -56,8 +61,8 @@
       </v-carousel>
     </template>
   </div>
-</template>
-
+    </v-container>
+  </template>
 <script lang="ts">
 import type Film from "../../types/types";
 
@@ -102,11 +107,7 @@ export default {
       return items.overview.split(" ").length > 20; 
     },
     calculateRate(items: Film) {
-      if (items.vote_average <= 2) return 1;
-      if (items.vote_average <= 4) return 2;
-      if (items.vote_average <= 6) return 3;
-      if (items.vote_average <= 7) return 4;
-      return 5;
+      return items.vote_average/2;
     },
     truncatedText(items: Film) {
       return this.isLongText(items) ? items.overview.split(" ").slice(0, 20).join(" ") + "..." : items.overview;
@@ -123,8 +124,15 @@ export default {
 </script>
 
 <style lang="css">
+
 .populars {
   text-align: center;
   padding: 5%;
 }
+
+.container:hover{
+  background-color: black ;
+  opacity: 0.8;
+}
+
 </style>
