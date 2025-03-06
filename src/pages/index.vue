@@ -1,13 +1,12 @@
 <template>
   <Heropage />
-  <PopularFilms />
-  <PopularSeries />
+  <PopularsSection />
+
 </template>
 
 <script lang="ts" setup>
 import Heropage from '@/components/heropage.vue';
-import PopularFilms from '@/components/index/popularFilms.vue'
-import PopularSeries from '@/components/index/popularSeries.vue'
+import PopularsSection from '@/components/index/popularsSection.vue';
 
 </script>
 

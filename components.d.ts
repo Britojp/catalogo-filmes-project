@@ -11,7 +11,9 @@ declare module 'vue' {
     Heropage: typeof import('./src/components/heropage.vue')['default']
     Navbar: typeof import('./src/components/navbar.vue')['default']
     PopularFilms: typeof import('./src/components/index/popularFilms.vue')['default']
+    Populars: typeof import('./src/components/index/populars.vue')['default']
     PopularSeries: typeof import('./src/components/index/popularSeries.vue')['default']
+    PopularsSection: typeof import('./src/components/index/popularsSection.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
