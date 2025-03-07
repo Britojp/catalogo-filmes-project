@@ -12,18 +12,20 @@
             >
               
             </v-btn>
-            <v-text-field
+
+            <v-autocomplete
                 v-if="searchBtn"
                 prepend-inner-icon="mdi-magnify"
-                label="Search"
+                label="Digite o nome do filme que deseja buscar"
                 solo
-            
-            ></v-text-field>
+                :items=[]
+            ></v-autocomplete>
         </div>
     </v-container>
 </template>
 
 <script lang="ts">
+
 export default {
     name: 'HeroPage',
     data(){
@@ -31,10 +33,12 @@ export default {
     searchBtn : false,
     }
     },
+    
     methods: {
         isSearchBtn(){
             this.searchBtn = !this.searchBtn;
-        }
+        },
+        
     }
 }
 

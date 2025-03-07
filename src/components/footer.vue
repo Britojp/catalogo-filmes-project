@@ -28,8 +28,8 @@
       data: () => ({
         links: [
           {title: 'Home', router: '' },
-          {title: 'Filmes', router: '/films'},
-          {title: 'Séries', router: '/series'},
+          {title: 'Filmes', router: 'films'},
+          {title: 'Séries', router: 'series'},
         ],
       }),
     }

@@ -34,7 +34,6 @@ methods : {
       try {
         const data = await getMostPopularSeries(1);
         this.popularsTV = data.results;
-        console.log(this.popularsTV);
       } catch (error) {
         console.error("Erro ao carregar séries populares:", error);
       }

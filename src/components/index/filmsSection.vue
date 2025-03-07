@@ -25,6 +25,7 @@
       :items="films"
       density="compact"
       item-key="title"
+      items-per-page="20"
     >  
       <template v-slot:item.poster_path="{ item }">
         <v-img 
@@ -54,6 +55,11 @@
                           :icon="like ? 'mdi-heart' : 'mdi-heart-outline'"
                           ></v-icon>
                       </v-btn>
+      </template>
+      <template v-slot:item.release_date="{ item }">
+        <p>
+          {{converterDate(item.release_date)}}                    
+      </p>
       </template>
     </v-data-table>
 
@@ -119,6 +125,9 @@ export default {
           this.isLoading = false;
         });
     },
+    converterDate(release_date: string){
+      return release_date.split('-').reverse().join('/');
+    }
   },
 
   mounted() {

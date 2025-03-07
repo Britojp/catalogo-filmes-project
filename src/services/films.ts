@@ -1,7 +1,7 @@
 import {getAllMovies} from '@/services/api'
 import type Film from '@/types/types';
 
-export async function fetchAllMovies(): Promise<Film[]> {
+export async function fetchAllMovies(): Film[]{
     let allMovies: Film[] = [];
     let page = 1;
     let hasMorePages = true;
