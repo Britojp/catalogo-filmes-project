@@ -2,15 +2,17 @@
   <v-app-bar :elevation="5">
     <template #prepend />
     <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"/>
-    <v-btn>
-        <router-link to="/">
+    <v-btn icon="mdi-home">
+        <router-link to="">
           <v-icon>mdi-home</v-icon>
         </router-link>
       </v-btn>
 
       <v-app-bar-title>Catálogo de filmes - Norven</v-app-bar-title>
 
-
+      <template v-slot:append>
+          <v-btn icon="mdi-account"></v-btn>
+        </template>
 
     </v-app-bar>
     
@@ -21,7 +23,7 @@
       >
       
     <template v-for="item in items" :key="item.router">
-      <router-link :to="`/${item.router}`">
+      <router-link :to="`${item.router}`">
         <v-list-item>
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
@@ -45,7 +47,7 @@ export default {
       items: [
         {
           title: 'Home',
-          router: '/',
+          router: '',
           value: 'Home',
         },
         {
