@@ -6,7 +6,6 @@
 </template>
 
 <script lang="ts">
-import Populars from './populars.vue'
 import { getMostPopularMovies, getMostPopularSeries } from "@/services/api";
 import type Film from '../../types/types'
 export default {

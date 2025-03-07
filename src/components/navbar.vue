@@ -27,20 +27,8 @@
         </v-list-item>
       </router-link>
     </template>
-    
-      <v-btn 
-      icon="mdi-magnify"
-        @click="showInput"
-      />
-      <v-text-field 
-        v-if="isClicked" 
-        label="Procurar filmes" 
-        class="search-input"
-        solo
-        flat
-        clearable
-        active
-        />
+   
+   
     </v-navigation-drawer>
 
 
@@ -70,6 +58,11 @@ export default {
           router: 'series',
           value: 'Séries',
         },
+        {
+          title: 'Meus favoritos',
+          router: 'liked',
+          value: 'liked',
+        }
       ],
     }
   },
