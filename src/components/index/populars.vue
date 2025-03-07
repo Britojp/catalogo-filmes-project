@@ -107,7 +107,7 @@ export default {
       return items.overview.split(" ").length > 20; 
     },
     calculateRate(items: Film) {
-      return items.vote_average/2;
+      return Math.ceil(items.vote_average/2) == 0 ? 1 : Math.ceil(items.vote_average/2)  ;
     },
     truncatedText(items: Film) {
       return this.isLongText(items) ? items.overview.split(" ").slice(0, 20).join(" ") + "..." : items.overview;
