@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ZjY2OTYzYjFmZWM3N2Q5ZDE5MjViOTBjOWU0NTc3MyIsIm5iZiI6MTc0MDY3MjE5My42NTEsInN1YiI6IjY3YzA4Y2MxMGQyNTVjNDRjMWM4ZTEzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ASVQJysGqHXktiZlK3eQfuRA8kHalo3UKxpk6WhfAwM'
+const TOKEN =  import.meta.env.VITE_API_TOKEN;
 
 const axiosInstance = axios.create({
   baseURL: 'https://api.themoviedb.org/3',

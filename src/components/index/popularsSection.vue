@@ -12,34 +12,41 @@ export default {
   data() {
     return {
       popularsFilms: [] as Film[],
-      popularsTV : [] as Film[]
+      popularsTV : [] as Film[],
+      loading : false,
     };
   },
 
 
 mounted() {
     this.loadPopularMovies();
-    this.loadRatedTV();
+    this.loadPopularSeries();
   },
 methods : {
-    async loadPopularMovies() {
-      try {
-        const data = await getMostPopularMovies(1);
-        this.popularsFilms = data.results;
-      } catch (error) {
-        console.error("Erro ao carregar filmes populares:", error);
-      }
-    },
-    async loadRatedTV() {
-      try {
-        const data = await getMostPopularSeries(1);
+    loadPopularMovies() {
+      this.loading = true;
+      getMostPopularMovies(1).then((data) =>{
+      this.popularsFilms = data.results;
+    }).catch((error) => {
+
+      console.error("Erro ao carregar filmes populares:", error);
+    }).finally(() => {
+      this.loading = false;
+    })
+      },
+    loadPopularSeries() {
+      this.loading = true;
+        getMostPopularSeries(1).then((data) =>{
         this.popularsTV = data.results;
-      } catch (error) {
+      }).catch ((error) => {
         console.error("Erro ao carregar séries populares:", error);
-      }
+    }).finally(() =>{
+      this.loading = false;
+    })
     },
+  },
 }
-}
+
 </script>
 
 <style>
