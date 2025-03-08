@@ -1,5 +1,13 @@
 <template>
-    <v-container class="hero">
+
+<v-skeleton-loader 
+ boilerplate 
+  type="card"
+    v-if="loading"
+  >
+</v-skeleton-loader>
+
+    <v-container class="hero" v-else>
         <div class="overlay"></div>
         <div class="hero-text">
             <h1>Bem-vindo ao Catálogo de Filmes</h1>
@@ -31,6 +39,7 @@ export default {
     data(){
         return{
     searchBtn : false,
+    loading : false,
     }
     },
     

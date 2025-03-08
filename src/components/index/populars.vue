@@ -4,6 +4,9 @@
     <h3>
       {{ description }}
     </h3>
+
+
+
   <div class="d-flex flex-row mt-6">
     <template v-if="populars.length">
       <v-carousel

@@ -1,9 +1,25 @@
 <template>
 
-<Populars title="Filmes Famosos" description="Confira os filmes mais populares do momento" :populars="popularsFilms"/>
-<Populars title="Séries Famosas" description="Descubra as séries mais assistidas atualmente" :populars="popularsTV" />
-
+<template v-if="loading" v-for="n in 2" :key="n">
+  <v-row class="my-4">
+    <v-col cols="12" md="3" class="pa-2" v-for="n in 4" :key="n">
+      <v-skeleton-loader
+        class="mx-auto border"
+        max-width="100%"
+        height="400"
+        type="image"
+      ></v-skeleton-loader>
+    </v-col>
+  </v-row>
 </template>
+
+<template v-else>
+  <Populars title="Filmes Famosos" description="Confira os filmes mais populares do momento" :populars="popularsFilms"/>
+  <Populars title="Séries Famosas" description="Descubra as séries mais assistidas atualmente" :populars="popularsTV" />
+</template>
+</template>
+
+
 
 <script lang="ts">
 import { getMostPopularMovies, getMostPopularSeries } from "@/services/api";
