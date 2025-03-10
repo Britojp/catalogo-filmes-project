@@ -86,8 +86,8 @@
 
 <script lang="ts">
 import { getAllMovies } from '@/services/api';
+import { useFilmsStore } from '@/stores/filmsStore';  
 import type Film from '@/types/types';
-import { useFilmsStore } from '@/stores/filmsStore';
 
 export default {
   name: 'filmsSection',
@@ -98,17 +98,15 @@ export default {
       total_pages: 1,
       currentPage: 1,
       headers: [
-        { title: 'Título', align:'start', key: 'title' },
-        { title: 'Capa do filme', align:'center',  sortable: false, key: 'poster_path' },
-        { title: 'Resumo', align:'center',  sortable: false, key: 'overview' },
-        { title: 'Data de lançamento', align:'center', key: 'release_date' },
-        { title: 'Nota popular',  align:'center',key: 'vote_average' },
-        { title: 'Favorito', align:'center', key:'favorite'},
+        { title: 'Título', align: 'start', key: 'title' },
+        { title: 'Capa do filme', align: 'center', sortable: false, key: 'poster_path' },
+        { title: 'Resumo', align: 'center', sortable: false, key: 'overview' },
+        { title: 'Data de lançamento', align: 'center', key: 'release_date' },
+        { title: 'Nota popular', align: 'center', key: 'vote_average' },
+        { title: 'Favorito', align: 'center', key: 'favorite' },
       ],
       isLoading: false,
-      like: false,
       search: '',
-      
     };
   },
 
@@ -120,32 +118,54 @@ export default {
           this.films = response.data.results;
           this.total_pages = response.total_pages;
           this.isLoading = false;
+
+          const filmsStore = useFilmsStore();
+          filmsStore.fetchAllMovies(this.films);
         })
         .catch((error) => {
           console.error('Erro ao carregar filmes populares:', error);
           this.isLoading = false;
         });
     },
-    converterDate(release_date: string){
+
+    converterDate(release_date: string) {
       return release_date.split('-').reverse().join('/');
     },
-    liked(film : Film){
-      film.favorite = !film.favorite;
-    }
 
+    liked(film: Film) {
+      const filmsStore = useFilmsStore();
+      filmsStore.toggleFavorite(film.id);  
+      this.films = filmsStore.allMovies;  
+    },
+
+    loadStorageOrApi() {
+      const filmsStore = useFilmsStore();
+      filmsStore.loadMoviesFromLocalStorage(); 
+      if (!filmsStore.allMovies.length) {
+        getAllMovies().then(response => {
+          this.films = response.data.results;
+          filmsStore.fetchAllMovies(this.films); 
+        }).catch(error => {
+          console.error('Erro ao carregar filmes:', error);
+        });
+      } else {
+        this.films = filmsStore.allMovies; 
+      }
+    }
   },
 
   mounted() {
-    this.loadAllFilms();
+    this.loadStorageOrApi();  
   },
 
   watch: {
     currentPage() {
       this.loadAllFilms();
     },
+    search() {
+      this.loadAllFilms();  
+    },
   },
 };
-</script>
 
-<style scoped>
-</style>
+</script>
