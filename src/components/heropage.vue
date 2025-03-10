@@ -2,10 +2,10 @@
     <v-skeleton-loader 
       boilerplate 
       type="card"
-      v-if="loading"
+      v-show="loading"
     ></v-skeleton-loader>
   
-    <v-container class="hero" v-else>
+    <v-container class="hero" v-show="!loading">
       <div class="overlay"></div>
       <div class="hero-text">
         <h1>Bem-vindo ao Catálogo de Filmes</h1>
@@ -29,9 +29,11 @@
           item-value="id" 
           messages="Digite o filme que deseja buscar"
           @input="handleSearchQuery"
-          v-model="searchQueryText"
+          :clearable="true"
         >
+
       </v-autocomplete>
+      
 
         
       </div>

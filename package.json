@@ -19,6 +19,7 @@
     "dotenv": "^16.4.7",
     "lodash.debounce": "^4.0.8",
     "pinia": "^3.0.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
     "roboto-fontface": "*",
     "ts-node": "^10.9.2",
     "v-click-outside": "^3.2.0",

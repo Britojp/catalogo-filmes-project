@@ -12,5 +12,5 @@ export default interface Film {
     name ?: string,
     vote_average: number,
     vote_count: number,   
-    favorite?: boolean,
+    favorite: boolean,
   }

@@ -48,11 +48,11 @@
 
       <template v-slot:item.favorite="{ item }">
         <v-btn
-                          @click="like = !like"
-                          :color="like ? 'red' : 'grey'"
+                          @click="liked(item)"
+                          :color="item.favorite ? 'red' : 'grey'"
                       >
                           <v-icon
-                          :icon="like ? 'mdi-heart' : 'mdi-heart-outline'"
+                          :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"
                           ></v-icon>
                       </v-btn>
       </template>
@@ -87,6 +87,7 @@
 <script lang="ts">
 import { getAllMovies } from '@/services/api';
 import type Film from '@/types/types';
+import { useFilmsStore } from '@/stores/filmsStore';
 
 export default {
   name: 'filmsSection',
@@ -103,11 +104,11 @@ export default {
         { title: 'Data de lançamento', align:'center', key: 'release_date' },
         { title: 'Nota popular',  align:'center',key: 'vote_average' },
         { title: 'Favorito', align:'center', key:'favorite'},
-
       ],
       isLoading: false,
       like: false,
       search: '',
+      
     };
   },
 
@@ -127,7 +128,11 @@ export default {
     },
     converterDate(release_date: string){
       return release_date.split('-').reverse().join('/');
+    },
+    liked(film : Film){
+      film.favorite = !film.favorite;
     }
+
   },
 
   mounted() {
