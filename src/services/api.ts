@@ -59,3 +59,23 @@ export const getAllMovies = async (page: number = 1) => {
         throw new Error('Erro ao buscar os filmes');
 }
 };
+
+export const searchMovies = async (query: string, page: number = 1) => {
+  try {
+    const response = await axiosInstance.get('/search/movie', {
+      params: {
+        query,
+        page
+      }
+    });
+
+    console.log("Resposta da API de Busca:", response.data);
+
+    return {
+      data: response.data
+    };
+  } catch (error) {
+    console.error("Erro ao buscar filme por nome:", error);
+    throw new Error('Erro ao buscar filme por nome');
+  }
+}
