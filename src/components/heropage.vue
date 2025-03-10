@@ -18,20 +18,21 @@
         >
         </v-btn>
 
-        <v-autocomplete
-          v-if="searchBtn"
-          prepend-inner-icon="mdi-magnify"
-          label="Digite o nome do filme que deseja buscar"
-          solo
-          :items="items"
-          :loading="loading"
-          item-text="title"
-          item-value="id" 
-          messages="Digite o filme que deseja buscar"
-          @input="handleSearchQuery"
-          :clearable="true"
-        >
-
+      <v-autocomplete
+        v-if="searchBtn"
+        v-model="searchQueryText"
+        :filter-keys="['title']"
+        prepend-inner-icon="mdi-magnify"
+        label="Digite o nome do filme que deseja buscar"
+        solo
+        :items="items"
+        :loading="loading"
+        item-text="title"
+        item-value="id" 
+        messages="Digite o filme que deseja buscar"
+        @input="handleSearchQuery"
+        :clearable="true"
+      >
       </v-autocomplete>
       
 

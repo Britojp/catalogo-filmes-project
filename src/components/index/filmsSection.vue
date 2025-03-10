@@ -162,9 +162,6 @@ export default {
     currentPage() {
       this.loadAllFilms();
     },
-    search() {
-      this.loadAllFilms();  
-    },
   },
 };
 
