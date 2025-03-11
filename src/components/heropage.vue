@@ -1,11 +1,7 @@
 <template>
-    <v-skeleton-loader 
-      boilerplate 
-      type="card"
-      v-show="loading"
-    ></v-skeleton-loader>
+
   
-    <v-container class="hero" v-show="!loading">
+    <v-container class="hero" >
       <div class="overlay"></div>
       <div class="hero-text">
         <h1>Bem-vindo ao Catálogo de Filmes</h1>
@@ -18,22 +14,16 @@
         >
         </v-btn>
 
-      <v-autocomplete
+      <v-text-field
         v-if="searchBtn"
-        v-model="searchQueryText"
-        :filter-keys="['title']"
+        v-model="store.searchQueryText"
         prepend-inner-icon="mdi-magnify"
         label="Digite o nome do filme que deseja buscar"
-        solo
-        :items="items"
-        :loading="loading"
-        item-text="title"
-        item-value="id" 
-        messages="Digite o filme que deseja buscar"
-        @input="handleSearchQuery"
+        solo  
+        @input="store.handleSearchQuery"
         :clearable="true"
       >
-      </v-autocomplete>
+      </v-text-field>
       
 
         
@@ -42,48 +32,27 @@
   </template>
   
   <script lang="ts">
-  import { searchMovies } from '@/services/api';
-  import debounce from 'lodash/debounce';
+  import { useFilmsStore } from '@/stores/filmsStore';
   
   export default {
     name: 'HeroPage',
-    data(): { searchBtn: boolean; loading: boolean; searchQueryText: string; items:any} {
+    data(): { searchBtn: boolean; items:any} {
       return {
         searchBtn: false,
-        loading: false,
-        searchQueryText: "",
         items: [],
       };
+    },
+    computed: {
+      store() {
+        return useFilmsStore();
+      }
     },
     methods: {
       isSearchBtn() {
         this.searchBtn = !this.searchBtn;
         
       },
-      handleSearchQuery: debounce(function (this: any, event: Event, ) {
-      const queryText = (event.target as HTMLInputElement).value;
-      console.log("Consulta de pesquisa:", queryText);
-
-      if (queryText && queryText.length > 3) { 
-        this.loading = true;
-        
-        console.log("Chamando a API com a query:", queryText);
-        
-        searchMovies(queryText, 1)
-          .then((response) => {
-            console.log("Resposta da API:", response.data.results);
-            this.items = response.data.results || []; 
-          })
-          .catch((error) => {
-            console.error('Erro ao buscar filmes:', error);
-          })
-          .finally(() => {
-            this.loading = false; 
-          });
-      } else {
-        this.items = [];
-      }
-    }, 500) 
+     
   },
 };
 </script>

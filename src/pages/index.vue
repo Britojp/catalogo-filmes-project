@@ -1,12 +1,14 @@
 <template>
   <Heropage />
-  <PopularsSection />
+  <ShowSearch />
+ 
 
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import Heropage from '@/components/heropage.vue';
 import PopularsSection from '@/components/index/popularsSection.vue';
+import ShowSearch from '@/components/index/showSearch.vue';
 
 </script>
 

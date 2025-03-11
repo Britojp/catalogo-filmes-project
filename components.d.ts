@@ -20,5 +20,6 @@ declare module 'vue' {
     PopularsSection: typeof import('./src/components/index/popularsSection.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShowSearch: typeof import('./src/components/index/showSearch.vue')['default']
   }
 }
