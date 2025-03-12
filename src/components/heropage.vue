@@ -11,6 +11,8 @@
           icon="mdi-magnify"
           class="mb-5"
           @click="isSearchBtn"
+          v-tooltip="'Procurar filmes'"
+
         >
         </v-btn>
 
@@ -22,6 +24,7 @@
         solo  
         @input="store.handleSearchQuery"
         :clearable="true"
+        
       >
       </v-text-field>
       
@@ -50,11 +53,20 @@
     methods: {
       isSearchBtn() {
         this.searchBtn = !this.searchBtn;
-        
+
       },
-     
-  },
-};
+    
+    },
+    watch: {
+      searchBtn(newVal) {
+      this.store.isBtnSearchClicked = newVal;
+      this.store.searchQueryText = '';
+      }
+    }
+      
+
+
+}
 </script>
 
   

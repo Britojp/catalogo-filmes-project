@@ -1,84 +1,64 @@
 <template>
   <v-card flat v-if="!isLoading">
-
     <v-card-title class="d-flex align-center pe-2">
-          Listagem de todos os filmes
-        <v-spacer></v-spacer>
-  
-        <v-text-field
-          v-model="search"
-          density="compact"
-          label="Search"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo-filled"
-          flat
-          hide-details
-          single-line
-        ></v-text-field>
-      </v-card-title>
-      <v-divider></v-divider>
-    <v-data-table
-    v-model:search="search"
-          :filter-keys="['title']"
-          hide-default-footer
-      :headers="headers"
-      :items="films"
-      density="compact"
-      item-key="title"
-      items-per-page="20"
-    >  
+      <v-select prepend-inner-icon="mdi-filter"
+       label="Filtrar por gênero" :items="filmsGenders"
+      multiple variant="solo-filled" flat single-line class="mx-2" density="compact" :menu-props="{ maxHeight: '200px' }" :style="{ width: '300px' }"></v-select>
+
+      <v-spacer></v-spacer>
+      <v-text-field v-model="search" density="compact" label="Pesquisar" prepend-inner-icon="mdi-magnify"
+      variant="solo-filled" flat hide-details single-line class="mx-2"></v-text-field>
+    </v-card-title>
+
+
+    <v-divider></v-divider>
+
+
+
+    <v-data-table v-model:search="search" :filter-keys="['title']" hide-default-footer :headers="headers" :items="films"
+      density="compact" item-key="title" items-per-page="20">
+      <template v-slot:item.genres="{ item }">
+
+        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="index">
+          {{ genre }}<span v-if="index < item.genres.length - 1">, </span>
+        </span>
+      </template>
+
+
       <template v-slot:item.poster_path="{ item }">
-        <v-img 
-          :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" 
-          alt="Poster do filme"
-          width="100"
-        ></v-img>
+        <v-img :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" alt="Poster do filme" width="100"></v-img>
       </template>
 
       <template v-slot:item.vote_average="{ item }">
-        <v-rating
-                      :model-value=" Math.ceil(item.vote_average/2) == 0 ? 1 : Math.ceil(item.vote_average/2)"
-                        class="me-2"
-                        color="orange"
-                        density="compact"
-                        half-increments
-                        readonly>                    
-                  </v-rating>
+        <v-rating :model-value="Math.ceil(item.vote_average / 2) == 0 ? 1 : Math.ceil(item.vote_average / 2)" class="me-2"
+          color="orange" density="compact" half-increments readonly>
+        </v-rating>
       </template>
 
       <template v-slot:item.favorite="{ item }">
-        <v-btn
-                          @click="liked(item)"
-                          :color="item.favorite ? 'red' : 'grey'"
-                      >
-                          <v-icon
-                          :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"
-                          ></v-icon>
-                      </v-btn>
+        <v-btn @click="liked(item)" :color="item.favorite ? 'red' : 'grey'">
+          <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+        </v-btn>
       </template>
       <template v-slot:item.release_date="{ item }">
         <p>
-          {{converterDate(item.release_date)}}                    
-      </p>
+          {{ converterDate(item.release_date) }}
+        </p>
       </template>
     </v-data-table>
 
-    <v-pagination
-      :length="total_pages"
-      show-first-last-page
-      total-visible="5"
-      v-model="currentPage"
-    ></v-pagination>
+
+
+
+    <v-pagination :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
   </v-card>
+
+
 
   <v-container v-else>
     <v-row>
       <v-col>
-        <v-skeleton-loader
-          class="mx-auto border"
-          type="table-tbody"
-          :loading="isLoading"
-        ></v-skeleton-loader>
+        <v-skeleton-loader class="mx-auto border" type="table-tbody" :loading="isLoading"></v-skeleton-loader>
       </v-col>
     </v-row>
   </v-container>
@@ -86,24 +66,28 @@
 
 <script lang="ts">
 import { getAllMovies } from '@/services/api';
-import { useFilmsStore } from '@/stores/filmsStore';  
+import { useFilmsStore } from '@/stores/filmsStore';
 import type Film from '@/types/types';
-
+import { genresMoviesDB } from '@/types/types';
 export default {
   name: 'filmsSection',
 
   data() {
     return {
       films: [] as Film[],
-      total_pages: 1,
+      total_pages: 500,
       currentPage: 1,
       headers: [
         { title: 'Título', align: 'start', key: 'title' },
+        { title: 'Gêneros', align: 'center', key: 'genres', sortable: false },
         { title: 'Capa do filme', align: 'center', sortable: false, key: 'poster_path' },
         { title: 'Resumo', align: 'center', sortable: false, key: 'overview' },
         { title: 'Data de lançamento', align: 'center', key: 'release_date' },
         { title: 'Nota popular', align: 'center', key: 'vote_average' },
         { title: 'Favorito', align: 'center', key: 'favorite' },
+      ],
+      filmsGenders: [
+        ...genresMoviesDB.map(genre => genre.name),
       ],
       isLoading: false,
       search: '',
@@ -118,14 +102,11 @@ export default {
           this.films = response.data.results;
           this.total_pages = response.total_pages;
           this.isLoading = false;
-
-          const filmsStore = useFilmsStore();
-          filmsStore.fetchAllMovies(this.films);
         })
         .catch((error) => {
           console.error('Erro ao carregar filmes populares:', error);
           this.isLoading = false;
-        });
+        })
     },
 
     converterDate(release_date: string) {
@@ -134,28 +115,40 @@ export default {
 
     liked(film: Film) {
       const filmsStore = useFilmsStore();
-      filmsStore.toggleFavorite(film.id);  
-      this.films = filmsStore.allMovies;  
+      filmsStore.toggleFavorite(film.id);
+      this.films = filmsStore.allMovies;
     },
 
     loadStorageOrApi() {
       const filmsStore = useFilmsStore();
-      filmsStore.loadMoviesFromLocalStorage(); 
+      filmsStore.loadMoviesFromLocalStorage();
       if (!filmsStore.allMovies.length) {
         getAllMovies().then(response => {
           this.films = response.data.results;
-          filmsStore.fetchAllMovies(this.films); 
+          filmsStore.fetchAllMovies(this.films);
+
         }).catch(error => {
           console.error('Erro ao carregar filmes:', error);
+        }).finally(() => {
+
         });
       } else {
-        this.films = filmsStore.allMovies; 
+        this.films = filmsStore.allMovies;
       }
+    },
+    loadGenrer() {
+      this.films.forEach(film => {
+        film.genres = film.genre_ids.map(id => {
+          const genre = genresMoviesDB.find(g => g.id === id);
+          return genre ? genre.name : "Desconhecido";
+        });
+      });
     }
   },
 
   mounted() {
-    this.loadStorageOrApi();  
+    this.loadStorageOrApi();
+    this.loadGenrer();
   },
 
   watch: {

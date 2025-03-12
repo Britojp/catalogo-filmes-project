@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
 import { searchMovies } from '@/services/api';
+import debounce from 'lodash/debounce';
 
 export const useFilmsStore = defineStore('likedFilms', {
   state() {
@@ -9,6 +10,7 @@ export const useFilmsStore = defineStore('likedFilms', {
       favoriteMovies: [] as Film[],  
       searchQueryText : '',
       searchMovies : [] as Film[],
+      isBtnSearchClicked : false,
     };
   },
   actions: {
@@ -32,7 +34,7 @@ export const useFilmsStore = defineStore('likedFilms', {
 
     fetchAllMovies(movies: Film[]) {
       this.allMovies = movies;
-      this.saveMoviesToLocalStorage(); 
+
     },
 
     toggleFavorite(movieId: number) {
@@ -42,24 +44,22 @@ export const useFilmsStore = defineStore('likedFilms', {
         this.saveMoviesToLocalStorage(); 
       }
     },
-    handleSearchQuery() {
-  
-      if (this.searchQueryText && this.searchQueryText.length > 3) { 
-        
-        
-        searchMovies(this.searchQueryText)
-          .then((response) => {
-            this.searchMovies = response.data.results || []; 
-          })
-          .catch((error) => {
-            console.error('Erro ao buscar filmes:', error);
-          })
-          .finally(() => {
-          });
-      } else {
-        this.searchMovies = [];
-      }
-    },
+  handleSearchQuery: debounce(function(this : any) {
+    if (this.searchQueryText && this.searchQueryText.length > 3) { 
+      searchMovies(this.searchQueryText)
+        .then((response) => {
+          this.searchMovies = response.data.results || []; 
+        })
+        .catch((error) => {
+          console.error('Erro ao buscar filmes:', error);
+        })
+        .finally(() => {
+        });
+    } else {
+      this.searchMovies = [];
+    }
+  }, 500),
+
   },
   
   getters: {
@@ -67,7 +67,6 @@ export const useFilmsStore = defineStore('likedFilms', {
       return state.allMovies.filter(movie => movie.favorite);
     },
     searchedMovies(state){
-      console.log('searchedMovies: ', state.searchMovies);
       return state.searchMovies;
     },
 

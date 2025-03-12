@@ -20,6 +20,7 @@ export const getMostPopularMovies = async (page: number = 1) => {
         });
         
         return response.data;
+        
         } catch (error) {
             console.error('Erro ao buscar filmes populares:', error);
             throw new Error('Erro ao buscar filmes populares');
