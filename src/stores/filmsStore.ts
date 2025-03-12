@@ -14,36 +14,7 @@ export const useFilmsStore = defineStore('likedFilms', {
     };
   },
   actions: {
-    loadMoviesFromLocalStorage() {
-      const storedMovies = localStorage.getItem('movies');
-      const storedFavoriteMovies = localStorage.getItem('favoriteMovies');
-      
-      if (storedMovies) {
-        const parsedMovies = JSON.parse(storedMovies);
-        this.allMovies = parsedMovies;
-      }
-      if(storedFavoriteMovies){
-        const parsedFavoriteMovies = JSON.parse(storedFavoriteMovies);
-        this.favoriteMovies = parsedFavoriteMovies;
-      }
-    },
 
-    saveMoviesToLocalStorage() {
-      localStorage.setItem('movies', JSON.stringify(this.allMovies));
-    },
-
-    fetchAllMovies(movies: Film[]) {
-      this.allMovies = movies;
-
-    },
-
-    toggleFavorite(movieId: number) {
-      const movie = this.allMovies.find(m => m.id === movieId);
-      if (movie) {
-        movie.favorite = !movie.favorite;  
-        this.saveMoviesToLocalStorage(); 
-      }
-    },
   handleSearchQuery: debounce(function(this : any) {
     if (this.searchQueryText && this.searchQueryText.length > 3) { 
       searchMovies(this.searchQueryText)
@@ -61,6 +32,7 @@ export const useFilmsStore = defineStore('likedFilms', {
   }, 500),
 
   },
+
   
   getters: {
     favoriteMovies(state) {
@@ -71,4 +43,8 @@ export const useFilmsStore = defineStore('likedFilms', {
     },
 
   },
+
+
+
+  persist: true,
 });

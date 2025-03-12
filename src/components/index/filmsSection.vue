@@ -1,9 +1,22 @@
 <template>
   <v-card flat v-if="!isLoading">
     <v-card-title class="d-flex align-center pe-2">
-      <v-select prepend-inner-icon="mdi-filter"
-       label="Filtrar por gênero" :items="filmsGenders"
-      multiple variant="solo-filled" flat single-line class="mx-2" density="compact" :menu-props="{ maxHeight: '200px' }" :style="{ width: '300px' }"></v-select>
+      
+      <v-select 
+    prepend-inner-icon="mdi-filter"
+    label="Filtrar por gênero" 
+    :items="filmsGenders"
+    v-model="selectedGenres" 
+    multiple 
+    variant="solo-filled" 
+    flat 
+    single-line 
+    class="mx-2" 
+    density="compact" 
+    :menu-props="{ maxHeight: '200px' }" 
+    :style="{ width: '300px' }">
+    </v-select>
+
 
       <v-spacer></v-spacer>
       <v-text-field v-model="search" density="compact" label="Pesquisar" prepend-inner-icon="mdi-magnify"
@@ -17,9 +30,9 @@
 
     <v-data-table v-model:search="search" :filter-keys="['title']" hide-default-footer :headers="headers" :items="films"
       density="compact" item-key="title" items-per-page="20">
+      
       <template v-slot:item.genres="{ item }">
-
-        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="index">
+        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="genre">
           {{ genre }}<span v-if="index < item.genres.length - 1">, </span>
         </span>
       </template>
@@ -36,7 +49,7 @@
       </template>
 
       <template v-slot:item.favorite="{ item }">
-        <v-btn @click="liked(item)" :color="item.favorite ? 'red' : 'grey'">
+        <v-btn @click="toggleFavorite(item.id)" :color="item.favorite ? 'red' : 'grey'">
           <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
         </v-btn>
       </template>
@@ -66,7 +79,6 @@
 
 <script lang="ts">
 import { getAllMovies } from '@/services/api';
-import { useFilmsStore } from '@/stores/filmsStore';
 import type Film from '@/types/types';
 import { genresMoviesDB } from '@/types/types';
 export default {
@@ -78,22 +90,24 @@ export default {
       total_pages: 500,
       currentPage: 1,
       headers: [
-        { title: 'Título', align: 'start', key: 'title' },
-        { title: 'Gêneros', align: 'center', key: 'genres', sortable: false },
-        { title: 'Capa do filme', align: 'center', sortable: false, key: 'poster_path' },
-        { title: 'Resumo', align: 'center', sortable: false, key: 'overview' },
-        { title: 'Data de lançamento', align: 'center', key: 'release_date' },
-        { title: 'Nota popular', align: 'center', key: 'vote_average' },
-        { title: 'Favorito', align: 'center', key: 'favorite' },
+        { title: 'Título', align: 'start' as const, key: 'title' },
+        { title: 'Gêneros', align: 'center' as const, key: 'genres', sortable: false },
+        { title: 'Capa do filme', align: 'center' as const, sortable: false, key: 'poster_path' },
+        { title: 'Resumo', align: 'center' as const, sortable: false, key: 'overview' },
+        { title: 'Data de lançamento', align: 'center' as const, key: 'release_date' },
+        { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
+        { title: 'Favorito', align: 'center' as const, key: 'favorite' },
       ],
       filmsGenders: [
         ...genresMoviesDB.map(genre => genre.name),
       ],
       isLoading: false,
       search: '',
+      filterMovies: [] as Film[],
+      selectedGenres : [] as string[],
     };
   },
-
+  
   methods: {
     loadAllFilms() {
       this.isLoading = true;
@@ -102,6 +116,7 @@ export default {
           this.films = response.data.results;
           this.total_pages = response.total_pages;
           this.isLoading = false;
+          this.loadGenres();
         })
         .catch((error) => {
           console.error('Erro ao carregar filmes populares:', error);
@@ -109,51 +124,41 @@ export default {
         })
     },
 
+    
+
     converterDate(release_date: string) {
       return release_date.split('-').reverse().join('/');
     },
 
-    liked(film: Film) {
-      const filmsStore = useFilmsStore();
-      filmsStore.toggleFavorite(film.id);
-      this.films = filmsStore.allMovies;
-    },
-
-    loadStorageOrApi() {
-      const filmsStore = useFilmsStore();
-      filmsStore.loadMoviesFromLocalStorage();
-      if (!filmsStore.allMovies.length) {
-        getAllMovies().then(response => {
-          this.films = response.data.results;
-          filmsStore.fetchAllMovies(this.films);
-
-        }).catch(error => {
-          console.error('Erro ao carregar filmes:', error);
-        }).finally(() => {
-
-        });
-      } else {
-        this.films = filmsStore.allMovies;
+    toggleFavorite(movieId: number) {
+      const movie = this.films.find(m => m.id === movieId);
+      if (movie) {
+        movie.favorite = !movie.favorite;  
       }
     },
-    loadGenrer() {
+
+    loadGenres() {
       this.films.forEach(film => {
         film.genres = film.genre_ids.map(id => {
           const genre = genresMoviesDB.find(g => g.id === id);
           return genre ? genre.name : "Desconhecido";
         });
       });
-    }
+    },
+
+
   },
 
   mounted() {
-    this.loadStorageOrApi();
-    this.loadGenrer();
+    this.loadAllFilms();
+    this.loadGenres();
+
   },
 
   watch: {
     currentPage() {
       this.loadAllFilms();
+
     },
   },
 };
