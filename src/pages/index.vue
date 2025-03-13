@@ -9,18 +9,18 @@
 import Heropage from '@/components/heropage.vue';
 import PopularsSection from '@/components/index/popularsSection.vue';
 import ShowSearch from '@/components/index/showSearch.vue';
-import { useFilmsStore } from '@/stores/filmsStore';
+import { useSearchStore } from '@/stores/searchStore';
 
-export default{
+export default {
   data() {
-    return{
-    isBtn : false,
-  }
+    return {
+      isBtn: false,
+    };
   },
 
   computed: {
     store() {
-      return useFilmsStore();
+      return useSearchStore();
     },
 
   },
@@ -28,7 +28,7 @@ export default{
   watch : {
     store: {
       handler() {
-        this.isBtn = this.store.isBtnSearchClicked
+        this.isBtn = this.store.getIsBtn;
       },
       deep: true
     }

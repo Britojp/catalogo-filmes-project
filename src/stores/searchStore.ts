@@ -3,12 +3,12 @@ import type Film from '@/types/types';
 import { searchMovies } from '@/services/api';
 import debounce from 'lodash/debounce';
 
-export const useFilmsStore = defineStore('filmsStore', {
+export const useSearchStore = defineStore('searchStore', {
   state() {
     return {
-      allMovies: {} as Record<number, Film[]>,
-      favoriteMovies: [] as Film[],  
-     
+      searchQueryText : '',
+      searchMovies : [] as Film[],
+      isBtnSearchClicked : false,
     };
   },
   actions: {
@@ -29,22 +29,23 @@ export const useFilmsStore = defineStore('filmsStore', {
     }
   }, 500),
 
-  addMoviesForPage(page: number, movies: Film[]) {
-    this.allMovies[page] = movies;
-  },
+  setIsBtn(){
+    return !this.isBtnSearchClicked;
+  }
 
 },
 
-  
+
   getters: {
 
-    getMoviesForPage: (state) => (page: number): Film[] => {
-      return state.allMovies[page] || [];
+    getSearchedMovies(state){
+      return state.searchMovies;
     },
-
+    getIsBtn(state){
+        return state.isBtnSearchClicked;
+    }
   },
 
 
 
-  persist: true,
 });

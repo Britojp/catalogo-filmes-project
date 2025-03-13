@@ -35,7 +35,7 @@
   </template>
   
   <script lang="ts">
-  import { useFilmsStore } from '@/stores/filmsStore';
+  import { useSearchStore } from '@/stores/searchStore';
   
   export default {
     name: 'HeroPage',
@@ -47,7 +47,7 @@
     },
     computed: {
       store() {
-        return useFilmsStore();
+        return useSearchStore();
       }
     },
     methods: {

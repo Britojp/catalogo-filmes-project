@@ -115,28 +115,29 @@ export default {
   
   methods: {
     loadAllFilms() {
-    this.isLoading = true;
+  this.isLoading = true;
 
-    if (this.store.getAllMovies.length === 0 || this.currentPage !== 1) {
-      getAllMovies(this.currentPage)
-        .then((response) => {
-          this.films = response.data.results;
-          this.total_pages = response.data.total_pages;
-          this.loadGenres();
+  if (!this.store.getMoviesForPage(this.currentPage).length) {
+    getAllMovies(this.currentPage)
+      .then((response) => {
+        this.films = response.data.results;
+        this.total_pages = response.data.total_pages;
+        this.loadGenres();
 
-          this.store.addAllMovies(this.films);
-        })
-        .catch((error) => {
-          console.error('Erro ao carregar filmes populares:', error);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    } else {
-      this.films = this.store.getAllMovies;
-      this.isLoading = false;
-    }
-  },
+        this.store.addMoviesForPage(this.currentPage, this.films);
+      })
+      .catch((error) => {
+        console.error('Erro ao carregar filmes populares:', error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
+  } else {
+    this.films = this.store.getMoviesForPage(this.currentPage);
+    this.isLoading = false;
+  }
+},
+
 
 
 

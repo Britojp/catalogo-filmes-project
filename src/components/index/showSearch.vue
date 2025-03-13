@@ -35,7 +35,7 @@ readonly />
 
 <script lang="ts">
 import type Film from '@/types/types';
-import { useFilmsStore } from '@/stores/filmsStore';
+import {useSearchStore} from '@/stores/searchStore'
 
 export default {
   name: 'ShowSearch',
@@ -44,12 +44,13 @@ export default {
     return {
       films: [] as Film[],
       expanded: new Set<number>(),
+      isBtn: false,
 
     }
   },
   methods: {
     loadFilms() {
-      this.store.searchMovies;
+     this.store.searchMovies;
     },
     isLongText(items: Film) {
       return items.overview.split(" ").length > 20;
@@ -70,18 +71,19 @@ export default {
   },
   computed: {
     store() {
-      return useFilmsStore();
+      return useSearchStore();
     },
 
   },
   mounted() {
     this.loadFilms();
-    console.log(this.films);
+
   },
   watch: {
     store: {
       handler() {
         this.films = this.store.getSearchedMovies;
+        this.isBtn = this.store.getIsBtn;
       },
       deep: true
     }
