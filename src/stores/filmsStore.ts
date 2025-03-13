@@ -31,16 +31,23 @@ export const useFilmsStore = defineStore('likedFilms', {
     }
   }, 500),
 
-  },
+  addAllMovies(movies: Film[]){
+    this.allMovies = [...this.allMovies, ...movies];
+  }
+
+},
 
   
   getters: {
-    favoriteMovies(state) {
+    getFavoriteMovies(state) {
       return state.allMovies.filter(movie => movie.favorite);
     },
-    searchedMovies(state){
+    getSearchedMovies(state){
       return state.searchMovies;
     },
+    getAllMovies(state){
+      return state.allMovies ;  
+    }
 
   },
 

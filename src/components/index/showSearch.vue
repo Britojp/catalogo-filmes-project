@@ -81,7 +81,7 @@ export default {
   watch: {
     store: {
       handler() {
-        this.films = this.store.searchedMovies;
+        this.films = this.store.getSearchedMovies;
       },
       deep: true
     }

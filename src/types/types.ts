@@ -1,18 +1,16 @@
 export default interface Film {
-  backdrop_path: string,
-  genre_ids: number[],
-  genres?: string[],
-  id: number,
-  overview: string,
-  poster_path: string,
-  release_date: string,
-  title?: string,
-  name?: string,
-  vote_average: number,
-  favorite: boolean,
-
+  backdrop_path: string;
+  genre_ids: number[];
+  genres?: string[];
+  id: number;
+  overview: string;
+  release_date: string;
+  title?: string;
+  name?: string;
+  vote_average: number;
+  favorite: boolean;
+  poster_path: string;
 }
-
 export const genresMoviesDB: { name: string, id: number }[] = [
   { name: 'Action', id: 28 },
   { name: 'Adventure', id: 12 },

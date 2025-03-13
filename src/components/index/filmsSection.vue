@@ -14,6 +14,7 @@
     class="mx-2" 
     density="compact" 
     :menu-props="{ maxHeight: '200px' }" 
+    @change="applyFilters"
     :style="{ width: '300px' }">
     </v-select>
 
@@ -61,26 +62,30 @@
     </v-data-table>
 
 
+    <div class="text-center my-4">
 
+    </div>
 
-    <v-pagination :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
-  </v-card>
+<v-pagination :length="total_pages"
+  show-first-last-page total-visible="5" 
+  v-model="currentPage"
+></v-pagination>
+</v-card>
 
-
-
-  <v-container v-else>
-    <v-row>
-      <v-col>
-        <v-skeleton-loader class="mx-auto border" type="table-tbody" :loading="isLoading"></v-skeleton-loader>
-      </v-col>
-    </v-row>
-  </v-container>
+<v-container v-else>
+  <v-row>
+    <v-col>
+      <v-skeleton-loader class="mx-auto border" type="table-tbody" :loading="isLoading"></v-skeleton-loader>
+    </v-col>
+  </v-row>
+</v-container>
 </template>
 
 <script lang="ts">
 import { getAllMovies } from '@/services/api';
 import type Film from '@/types/types';
 import { genresMoviesDB } from '@/types/types';
+import { useFilmsStore } from '@/stores/filmsStore';
 export default {
   name: 'filmsSection',
 
@@ -110,25 +115,52 @@ export default {
   
   methods: {
     loadAllFilms() {
-      this.isLoading = true;
+    this.isLoading = true;
+
+    if (this.store.getAllMovies.length === 0 || this.currentPage !== 1) {
       getAllMovies(this.currentPage)
         .then((response) => {
           this.films = response.data.results;
-          this.total_pages = response.total_pages;
-          this.isLoading = false;
+          this.total_pages = response.data.total_pages;
           this.loadGenres();
+
+          this.store.addAllMovies(this.films);
         })
         .catch((error) => {
           console.error('Erro ao carregar filmes populares:', error);
-          this.isLoading = false;
         })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    } else {
+      this.films = this.store.getAllMovies;
+      this.isLoading = false;
+    }
+  },
+
+
+
+  applyFilters() {
+      this.filterMovies = this.films.filter(film => {
+        const genreMatch = this.selectedGenres.length 
+          ? film.genres && film.genres.some(genre => this.selectedGenres.includes(genre))
+          : true;
+        const searchMatch = this.search
+          ? ((film.title ?? '').toLowerCase().includes(this.search.toLowerCase()) || 
+          film.name?.toLocaleLowerCase().includes(this.search.toLowerCase()))
+          : true;
+        return genreMatch && searchMatch;
+      });
     },
 
     
 
     converterDate(release_date: string) {
-      return release_date.split('-').reverse().join('/');
-    },
+  if (!release_date) {
+    return 'Sem data';  
+  }
+  return release_date.split('-').reverse().join('/');
+},
 
     toggleFavorite(movieId: number) {
       const movie = this.films.find(m => m.id === movieId);
@@ -139,10 +171,14 @@ export default {
 
     loadGenres() {
       this.films.forEach(film => {
-        film.genres = film.genre_ids.map(id => {
-          const genre = genresMoviesDB.find(g => g.id === id);
-          return genre ? genre.name : "Desconhecido";
-        });
+        if (film.genre_ids) {
+          film.genres = film.genre_ids.map(id => {
+            const genre = genresMoviesDB.find(g => g.id === id);
+            return genre ? genre.name : "Outro";
+          });
+        } else {
+          film.genres = ["Outro"];
+        }
       });
     },
 
@@ -152,15 +188,21 @@ export default {
   mounted() {
     this.loadAllFilms();
     this.loadGenres();
-
   },
 
   watch: {
     currentPage() {
       this.loadAllFilms();
-
     },
   },
+  computed: {
+    store() {
+      return useFilmsStore();
+    },
+    filteredFilms() {
+      return this.filterMovies.length ? this.filterMovies : this.films;
+    },
+}
 };
 
 </script>
