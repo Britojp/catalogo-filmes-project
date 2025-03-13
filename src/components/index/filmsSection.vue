@@ -29,7 +29,11 @@
 
 
 
-    <v-data-table v-model:search="search" :filter-keys="['title']" hide-default-footer :headers="headers" :items="films"
+    <v-data-table v-model:search="search" 
+    :filter-keys="['title']"
+     hide-default-footer 
+     :headers="headers"
+      :items="films"
       density="compact" item-key="title" items-per-page="20">
       
       <template v-slot:item.genres="{ item }">
@@ -103,8 +107,8 @@ export default {
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
       ],
-      filmsGenders: [
-        ...genresMoviesDB.map(genre => genre.name),
+      filmsGenders:[
+        ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
       ],
       isLoading: false,
       search: '',
@@ -142,16 +146,11 @@ export default {
 
 
   applyFilters() {
-      this.filterMovies = this.films.filter(film => {
-        const genreMatch = this.selectedGenres.length 
-          ? film.genres && film.genres.some(genre => this.selectedGenres.includes(genre))
-          : true;
-        const searchMatch = this.search
-          ? ((film.title ?? '').toLowerCase().includes(this.search.toLowerCase()) || 
-          film.name?.toLocaleLowerCase().includes(this.search.toLowerCase()))
-          : true;
-        return genreMatch && searchMatch;
-      });
+    this.filterMovies = this.films.filter(film => {
+      return this.selectedGenres.every(selectedGenre => 
+        film.genre_ids.includes(selectedGenre)
+      );
+    });
     },
 
     
@@ -166,7 +165,8 @@ export default {
     toggleFavorite(movieId: number) {
       const movie = this.films.find(m => m.id === movieId);
       if (movie) {
-        movie.favorite = !movie.favorite;  
+        movie.favorite = !movie.favorite; 
+        this.store.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
       }
     },
 

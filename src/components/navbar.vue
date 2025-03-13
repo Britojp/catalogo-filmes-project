@@ -3,7 +3,7 @@
     <template #prepend />
     <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"/>
     <v-btn icon="mdi-home">
-        <router-link to="">
+        <router-link to='/'>
           <v-icon>mdi-home</v-icon>
         </router-link>
       </v-btn>
@@ -39,6 +39,7 @@
 <script lang="ts">
 
 export default {
+  
   name: 'Navbar',
   data() {
     return {
@@ -47,22 +48,22 @@ export default {
       items: [
         {
           title: 'Home',
-          router: '',
+          router: '/',
           value: 'Home',
         },
         {
           title: 'Filmes',
-          router: 'films',
+          router: '/films',
           value: 'Filmes',
         },
         {
           title: 'Séries',
-          router: 'series',
+          router: '/series',
           value: 'Séries',
         },
         {
           title: 'Meus favoritos',
-          router: 'liked',
+          router: '/liked',
           value: 'liked',
         }
       ],
