@@ -1,7 +1,7 @@
 export default interface Film {
   backdrop_path: string;
   genre_ids: number[];
-  genres?: string;
+  genres: string[];
   id: number;
   overview: string;
   release_date: string;

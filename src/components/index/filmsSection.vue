@@ -2,11 +2,12 @@
   <v-card flat v-if="!isLoading">
     <v-card-title class="d-flex align-center pe-2">
 
-      <v-select 
+    <v-select 
     prepend-inner-icon="mdi-filter"
     label="Filtrar por gênero" 
-    :items="filmsGenders.map(gender => gender.name)"
+    :items="genderRender()"
     v-model="selectedGenres" 
+    item-value="id"
     multiple 
     variant="solo-filled" 
     flat 
@@ -14,9 +15,14 @@
     class="mx-2" 
     density="compact" 
     :menu-props="{ maxHeight: '200px' }" 
-    @change=""
     :style="{ width: '300px' }">
-    </v-select>
+  </v-select>
+  <v-btn
+  color="primary"
+  @click="filteredFilms()"
+  >
+  Pesquisar
+</v-btn>
 
 
       <v-spacer></v-spacer>
@@ -30,6 +36,7 @@
 
 
     <v-data-table v-model:search="search" 
+      :no-data-text="noDataMessage"
     :filter-keys="['title']"
      hide-default-footer 
      :headers="headers"
@@ -37,9 +44,11 @@
       density="compact" item-key="title" items-per-page="20">
 
       <template v-slot:item.genres="{ item }">
-        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="index">
-          {{ genre }}
-        </span>
+        <v-chip-group column>
+          <v-chip v-for="(genre, index) in item.genres" :key="index" class="ma-1" color="primary" text-color="white" variant="outlined" :disabled="true">
+        {{ genre }}
+          </v-chip>
+        </v-chip-group>
       </template>
 
 
@@ -70,7 +79,9 @@
 
     </div>
 
-<v-pagination :length="total_pages"
+<v-pagination
+v-if="!isFilter" 
+:length="total_pages"
   show-first-last-page total-visible="5" 
   v-model="currentPage"
 ></v-pagination>
@@ -112,14 +123,18 @@ export default {
       ],
       isLoading: false,
       search: '',
-      filterMovies: [] as Film[],
       selectedGenres : [] as string[],
+      genders: '',
+      noDataMessage: 'Não foi possível encontrar nenhum filme',
+      isFilter : false,
     };
   },
   
   methods: {
     loadAllFilms() {
   this.isLoading = true;
+  this.genders = '';
+  this.selectedGenres = [];
 
   if (!this.store.getMoviesForPage(this.currentPage).length) {
     getAllMovies(this.currentPage)
@@ -140,9 +155,11 @@ export default {
     this.films = this.store.getMoviesForPage(this.currentPage);
     this.isLoading = false;
   }
-  console.log(this.filmsGenders)
 },
   
+  genderRender(){
+    return this.filmsGenders.map(gender => gender.name)
+  },
 
     converterDate(release_date: string) {
   if (!release_date) {
@@ -151,30 +168,55 @@ export default {
   return release_date.split('-').reverse().join('/');
 },
 
-    toggleFavorite(movieId: number) {
-      const movie = this.films.find(m => m.id === movieId);
-      if (movie) {
-        movie.favorite = !movie.favorite; 
-        this.store.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
-      }
-    },
-
-    loadGenres() {
-      this.films.forEach(film => {
-        if (film.genre_ids) {
-          film.genres = film.genre_ids.map(id => {
-            const genre = genresMoviesDB.find(g => g.id === id);
-            return genre ? genre.name : "Outro";
-          }).join(', ');
-        } else {
-          film.genres = "Outro";
-        }
-      });
-    },
-
-
-
+  toggleFavorite(movieId: number) {
+    const movie = this.films.find(m => m.id === movieId);
+    if (movie) {
+    movie.favorite = !movie.favorite; 
+    this.store.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
+    }
   },
+
+  loadGenres() {
+    this.films = this.films.map(film => {
+    if (film.genre_ids) {
+    return {
+    ...film,
+    genres: film.genre_ids.map(id => {
+      const genre = genresMoviesDB.find(g => g.id === id);
+      return genre ? genre.name : "Outro";
+    })
+    };
+    } else {
+    return {
+    ...film,
+    genres: ["Outro"]
+    };
+    }
+    });
+    this.filmsGenders = genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name }));
+  },
+  
+
+  filteredFilms() {
+    this.isFilter = true
+  this.isLoading = true;
+  if (this.selectedGenres.length) {
+    const filtered = this.films.filter(film => 
+    this.selectedGenres.every(genre => film.genres.includes(genre))
+    );
+    if (filtered.length) {
+    this.films = filtered;
+    } else {
+      this.noDataMessage = 'Não há filmes com os gêneros selecionados';
+      this.films = [];
+    }
+  } else {
+    this.loadAllFilms();
+    this.isFilter = false
+  }
+  this.isLoading = false;
+  },
+},
 
   mounted() {
     this.loadAllFilms();
@@ -183,15 +225,15 @@ export default {
   watch: {
     currentPage() {
       this.loadAllFilms();
+      this.filteredFilms();
     },
   },
   computed: {
     store() {
       return useFilmsStore();
+      
     },
-    filteredFilms() {
-      return this.filterMovies.length ? this.filterMovies : this.films;
-    },
+    
 }
 };
 
