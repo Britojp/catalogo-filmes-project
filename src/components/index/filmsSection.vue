@@ -1,12 +1,12 @@
 <template>
   <v-card flat v-if="!isLoading">
     <v-card-title class="d-flex align-center pe-2">
-      
+
       <v-select 
     prepend-inner-icon="mdi-filter"
     label="Filtrar por gênero" 
-    :items="filmsGenders"
-    :v-model="selectedGenres" 
+    :items="filmsGenders.map(gender => gender.name)"
+    v-model="selectedGenres" 
     multiple 
     variant="solo-filled" 
     flat 
@@ -14,7 +14,7 @@
     class="mx-2" 
     density="compact" 
     :menu-props="{ maxHeight: '200px' }" 
-    @change=" "
+    @change=""
     :style="{ width: '300px' }">
     </v-select>
 
@@ -29,12 +29,16 @@
 
 
 
-    <v-data-table v-model:search="search" :filter-keys="['title']" hide-default-footer :headers="headers" :items="films"
+    <v-data-table v-model:search="search" 
+    :filter-keys="['title']"
+     hide-default-footer 
+     :headers="headers"
+      :items="films"
       density="compact" item-key="title" items-per-page="20">
-      
+
       <template v-slot:item.genres="{ item }">
-        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="genre">
-          {{ genre }}<span v-if="index < item.genres.length - 1">, </span>
+        <span v-if="item.genres" v-for="(genre, index) in item.genres" :key="index">
+          {{ genre }}
         </span>
       </template>
 
@@ -103,13 +107,13 @@ export default {
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
       ],
-      filmsGenders: [
-        ...genresMoviesDB.map(genre => (genre.id, genre.name)),
+      filmsGenders:[
+        ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
       ],
       isLoading: false,
       search: '',
       filterMovies: [] as Film[],
-      selectedGenres : {} as Record<number, String>,
+      selectedGenres : [] as string[],
     };
   },
   
@@ -122,6 +126,7 @@ export default {
       .then((response) => {
         this.films = response.data.results;
         this.total_pages = response.data.total_pages;
+        this.loadGenres();
 
         this.store.addMoviesForPage(this.currentPage, this.films);
       })
@@ -135,8 +140,9 @@ export default {
     this.films = this.store.getMoviesForPage(this.currentPage);
     this.isLoading = false;
   }
+  console.log(this.filmsGenders)
 },
-    
+  
 
     converterDate(release_date: string) {
   if (!release_date) {
@@ -150,12 +156,23 @@ export default {
       if (movie) {
         movie.favorite = !movie.favorite; 
         this.store.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
-        console.log(this.selectedGenres)
-
       }
     },
 
-   
+    loadGenres() {
+      this.films.forEach(film => {
+        if (film.genre_ids) {
+          film.genres = film.genre_ids.map(id => {
+            const genre = genresMoviesDB.find(g => g.id === id);
+            return genre ? genre.name : "Outro";
+          }).join(', ');
+        } else {
+          film.genres = "Outro";
+        }
+      });
+    },
+
+
 
   },
 

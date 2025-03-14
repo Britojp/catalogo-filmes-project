@@ -1,7 +1,7 @@
 <template>
 
   
-    <v-container class="hero" >
+    <div class="hero" >
       <div class="overlay"></div>
       <div class="hero-text">
         <h1>Bem-vindo ao Catálogo de Filmes</h1>
@@ -31,7 +31,7 @@
 
         
       </div>
-    </v-container>
+    </div>
   </template>
   
   <script lang="ts">
@@ -72,16 +72,17 @@
   
   <style scoped>
   .hero {
-    background: url("../assets/images/bg.jpg") no-repeat center center fixed;
+    background: url("../assets/images/bg-image.jpg") no-repeat center center fixed;
     background-size: cover;
     height: 70vh;
     width: 100vw;
-    filter: grayscale(80%);
+    filter: grayscale(40%);
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin: 0;
   }
   
   .overlay {
