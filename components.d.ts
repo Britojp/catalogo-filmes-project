@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AllFilmsSeries: typeof import('./src/components/filmsSeries/allFilmsSeries.vue')['default']
+    FilmsOrSeriesComponent: typeof import('./src/components/filmsSeries/filmsOrSeriesComponent.vue')['default']
     FilmsSection: typeof import('./src/components/index/filmsSection.vue')['default']
     FilmsSectionEdit: typeof import('./src/components/index/filmsSectionEdit.vue')['default']
     FilmsSectionTest: typeof import('./src/components/index/filmsSectionTest.vue')['default']
