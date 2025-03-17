@@ -15,6 +15,8 @@ declare module 'vue' {
     Footer: typeof import('./src/components/footer.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Heropage: typeof import('./src/components/heropage.vue')['default']
+    MoveDetails: typeof import('./src/components/papeDetails/moveDetails.vue')['default']
+    MovieDetails: typeof import('./src/components/pageDetails/movieDetails.vue')['default']
     Navbar: typeof import('./src/components/navbar.vue')['default']
     PopularFilms: typeof import('./src/components/index/popularFilms.vue')['default']
     Populars: typeof import('./src/components/index/populars.vue')['default']

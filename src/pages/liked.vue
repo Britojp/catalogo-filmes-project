@@ -18,7 +18,7 @@
         :style="{ width: '300px' }">
       </v-select>
 
-      <v-btn @click="filteredSeriesOrMovies()" color="primary">
+      <v-btn @click="filteredSeriesAndMovies()" color="primary">
         Procurar
       </v-btn>
 
@@ -31,7 +31,7 @@
 
     <v-data-table v-model:search="search" 
       :no-data-text="noDataMessage"
-      :filter-keys="['title']"
+      :filter-keys="['title', 'name']"
       hide-default-footer 
       :headers="headers"
       :items="moviesAndSeries"
@@ -178,14 +178,21 @@ export default {
       }));
     },
 
-    filteredSeriesOrMovies() {
+    filteredSeriesAndMovies() {
       this.isFilter = true;
       this.isLoading = true;
-
       if (this.selectedGenres.length) {
-        this.moviesAndSeries = this.moviesAndSeries.filter(film =>
+        const filtered = this.moviesAndSeries.filter(film =>
           this.selectedGenres.every(genre => film.genres.includes(genre))
-        )
+        );
+        if (filtered.length) {
+          this.moviesAndSeries = filtered;
+        } else {
+          this.moviesAndSeries = [];
+        }
+      } else {
+        this.loadFavoritesSeriesAndMovies();
+        this.isFilter = false;
       }
       this.isLoading = false;
     },
@@ -210,7 +217,7 @@ export default {
       if (!this.isFilter) {
         this.loadFavoritesSeriesAndMovies();
       } else {
-        this.filteredSeriesOrMovies();
+        this.filteredSeriesAndMovies();
       }
     },
   },

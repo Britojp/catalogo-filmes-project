@@ -44,6 +44,8 @@
                     >
                       {{ expanded.has(items.id) ? "Ver menos" : "Ver mais" }}
                     </v-btn>
+
+          
                   </v-card-text>
                   <v-card-title>
                     <v-rating

@@ -59,10 +59,21 @@
           <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
         </v-btn>
       </template>
+     
+      <template v-slot:item.id="{ item }">
+        <v-btn :to="{ name: 'MovieDetails', params: { id: item.id } }" append-icon="mdi-open-in-new">
+          Ver mais
+        </v-btn>
+      </template>
+
 
       <template v-slot:item.release_date="{ item }">
         <p>{{ converterDate(item.first_air_date) }}</p>
       </template>
+
+      
+
+
     </v-data-table>
 
     <v-pagination v-if="!isFilter && total_pages > 1" :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
@@ -99,6 +110,8 @@ export default {
         { title: 'Data de lançamento', align: 'center' as const, key: 'release_date' },
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
+        {title: 'Ver mais detalhes', align: 'center' as const, sortable: false, key: 'id'}
+
       ],
       SeriesGenders: [
         ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),

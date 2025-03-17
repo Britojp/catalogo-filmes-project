@@ -60,6 +60,14 @@
         </v-btn>
       </template>
 
+      
+        <template v-slot:item.id="{ item }">
+    <v-btn :to="{ name: 'MovieDetails', params: { id: item.id }, query: { movie: JSON.stringify(item) } }" append-icon="mdi-open-in-new">
+      Ver mais
+    </v-btn>
+  </template>
+
+
       <template v-slot:item.release_date="{ item }">
         <p>{{ converterDate(item.release_date) }}</p>
       </template>
@@ -108,6 +116,7 @@ export default {
         { title: 'Data de lançamento', align: 'center' as const, key: 'release_date' },
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
+        {title: 'Ver mais detalhes', align: 'center' as const, sortable: false, key: 'id'}
       ],
       filmsGenders: [
         ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
