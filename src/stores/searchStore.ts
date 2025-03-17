@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
-import { searchMovies } from '@/services/api';
+import { searchMoviesAndSeries } from '@/services/api';
 import debounce from 'lodash/debounce';
 
 export const useSearchStore = defineStore('searchStore', {
   state() {
     return {
       searchQueryText : '',
-      searchMovies : [] as Film[],
+      searchMoviesAndSeries : [] as Film[],
       isBtnSearchClicked : false,
     };
   },
@@ -15,9 +15,9 @@ export const useSearchStore = defineStore('searchStore', {
 
   handleSearchQuery: debounce(function(this : any) {
     if (this.searchQueryText && this.searchQueryText.length > 3) { 
-      searchMovies(this.searchQueryText)
+      searchMoviesAndSeries(this.searchQueryText)
         .then((response) => {
-          this.searchMovies = response.data.results || []; 
+          this.searchMoviesAndSeries = response.data.results || []; 
         })
         .catch((error) => {
           console.error('Erro ao buscar filmes:', error);
@@ -25,7 +25,7 @@ export const useSearchStore = defineStore('searchStore', {
         .finally(() => {
         });
     } else {
-      this.searchMovies = [];
+      this.searchMoviesAndSeries = [];
     }
   }, 500),
 
@@ -39,7 +39,7 @@ export const useSearchStore = defineStore('searchStore', {
   getters: {
 
     getSearchedMovies(state){
-      return state.searchMovies;
+      return state.searchMoviesAndSeries;
     },
     getIsBtn(state){
         return state.isBtnSearchClicked;

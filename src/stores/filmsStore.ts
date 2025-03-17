@@ -54,7 +54,9 @@ export const useFilmsStore = defineStore('filmsStore', {
     getMoviesForPage: (state) => (page: number): Film[] => {
       return state.allMovies[page] || [];
     },
-
+    getFavoriteMovies : (state) => () : Film[] => {
+      return Object.values(state.favoriteMovies).flat();
+    }
 
   },
 

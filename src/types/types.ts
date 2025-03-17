@@ -5,12 +5,15 @@ export default interface Film {
   id: number;
   overview: string;
   release_date: string;
-  title?: string;
-  name?: string;
+  first_air_date: string;
+  title: string;
+  name: string;
   vote_average: number;
   favorite: boolean;
   poster_path: string;
 }
+
+
 export const genresMoviesDB: { name: string, id: number }[] = [
   { name: 'Action', id: 28 },
   { name: 'Adventure', id: 12 },

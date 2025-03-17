@@ -6,7 +6,7 @@
         <v-card max-width="344"
 class="ma-2 pa-2 mx-auto" width="100%" v-bind="props">
           <v-img
-            :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'" />
+            :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.poster_path}` : 'https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'" />
           <v-overlay :model-value="!!isHovering"
 class="align-center justify-center container" scrim="#000000"
             contained>
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     loadFilms() {
-     this.store.searchMovies;
+     this.store.searchMoviesAndSeries;
     },
     isLongText(items: Film) {
       return items.overview.split(" ").length > 20;

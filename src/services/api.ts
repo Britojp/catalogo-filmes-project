@@ -61,9 +61,9 @@ export const getAllMovies = async (page: number = 1) => {
 }
 };
 
-export const searchMovies = async (query: string, page: number = 1) => {
+export const searchMoviesAndSeries = async (query: string, page: number = 1) => {
   try {
-    const response = await axiosInstance.get('/search/movie', {
+    const response = await axiosInstance.get('/search/multi', {
       params: {
         query,
         page
@@ -81,7 +81,7 @@ export const searchMovies = async (query: string, page: number = 1) => {
   }
 }
 
-export const allMoviesAndFilms = async (page: number = 1) => {
+export const allMoviesAndSeries = async (page: number = 1) => {
   try {
     const response = await axiosInstance.get('/trending/all/day', {
       params: {
@@ -98,4 +98,23 @@ export const allMoviesAndFilms = async (page: number = 1) => {
     console.error("Erro ao buscar filme por nome:", error);
     throw new Error('Erro ao buscar filme por nome');
   }
+
 }
+
+export const getAllSeries = async (page: number = 1) => {
+
+  try{
+    const response = await axiosInstance.get('/trending/tv/day', {
+      params: {
+            page
+        }
+    });
+    return{ 
+      data: response.data,
+      total_pages: response.data.total_pages,
+    };
+    } catch (error) {
+        console.error('Erro ao buscar todas as séries:', error);
+        throw new Error('Erro ao buscar as séries');
+}
+};
