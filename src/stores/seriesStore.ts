@@ -48,8 +48,27 @@ export const useSeriesStore = defineStore('SeriesStore', {
       ])
     );
   },
-
+  removeFavoriteSeries(serie: Film) {
+    for (const page in this.allSeries) {
+      const Series = this.allSeries[page];
+      const serieToUpdate = Series.find((m: Film) => m.id === serie.id);
+      if (serieToUpdate) {
+        serieToUpdate.favorite = false;
+        break;
+      }
+    }
+    this.updateFavoriteSeries();
+  },
+  updateFavoriteSeries() {
+    this.favoriteSeries = Object.fromEntries(
+      Object.entries(this.allSeries).map(([page, Series]) => [
+        page,
+        Series.filter((serie: Film) => serie.favorite),
+      ])
+    );
+  },
 },
+
   getters: {
     getSeriesForPage: (state) => (page: number): Film[] => {
       return state.allSeries[page] || [];

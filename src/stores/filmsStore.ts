@@ -48,8 +48,27 @@ export const useFilmsStore = defineStore('filmsStore', {
       ])
     );
   },
+  removefavoriteMovies(serie: Film) {
+      for (const page in this.allMovies) {
+        const Movies = this.allMovies[page];
+        const movieToUpdate = Movies.find((m: Film) => m.id === serie.id);
+        if (movieToUpdate) {
+          movieToUpdate.favorite = false;
+          break;
+        }
+      }
+      this.updatefavoriteMovies();
+    },
+    updatefavoriteMovies() {
+      this.favoriteMovies = Object.fromEntries(
+        Object.entries(this.allMovies).map(([page, Movies]) => [
+          page,
+          Movies.filter((serie: Film) => serie.favorite),
+        ])
+      );
+    },
+  },
 
-},
   getters: {
     getMoviesForPage: (state) => (page: number): Film[] => {
       return state.allMovies[page] || [];

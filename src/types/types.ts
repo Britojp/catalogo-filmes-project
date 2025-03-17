@@ -6,6 +6,7 @@ export default interface Film {
   overview: string;
   release_date: string;
   first_air_date: string;
+  media_type: string;
   title: string;
   name: string;
   vote_average: number;

@@ -34,8 +34,14 @@
       :filter-keys="['title']"
       hide-default-footer 
       :headers="headers"
-      :items="Series"
-      density="compact" item-key="title" items-per-page="20">
+      :items="moviesAndSeries"
+      density="compact" item-key="title">
+    
+      <template v-slot:item.title="{ item }">
+        <p>{{ getTitle(item) }}</p>
+      </template>
+
+
       <template v-slot:item.genres="{ item }">
         <v-chip-group column>
           <v-chip v-for="(genre, index) in item.genres" :key="index" class="ma-1" color="primary" text-color="white" variant="outlined" :disabled="true">
@@ -61,11 +67,18 @@
       </template>
 
       <template v-slot:item.release_date="{ item }">
-        <p>{{ converterDate(item.first_air_date) }}</p>
+        <p>{{ converterDate(getReleaseDate(item)) }}</p>
       </template>
+
+      <template v-slot:item.media_type="{ item }">
+        <v-chip :color="item.media_type === 'movie' ? 'blue' : 'green'" text-color="white">
+          {{ item.media_type === 'movie' ? 'Filme' : 'Série' }}
+        </v-chip>
+      </template>
+
     </v-data-table>
 
-    <v-pagination v-if="!isFilter" :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
+
   </v-card>
 
   <v-container v-else>
@@ -88,17 +101,14 @@ export default {
 
   data() {
     return {
-      Films: [] as Film[],
-      Series: [] as Film[],
-      total_pages: 500,
-      currentPage: 1,
+      moviesAndSeries: [] as Film[],
       headers: [
-        { title: 'Título', align: 'start' as const, key: 'name' },
+        { title: 'Título', align: 'start' as const, key: 'title'},
         { title: 'Gêneros', align: 'center' as const, key: 'genres', sortable: false },
-        { title: 'Capa ', align: 'center' as const, sortable: false, key: 'poster_path' },
+        { title: 'Capa', align: 'center' as const, sortable: false, key: 'poster_path' },
         { title: 'Resumo', align: 'center' as const, sortable: false, key: 'overview' },
         { title: 'Data de lançamento', align: 'center' as const, key: 'release_date' },
-        {title: 'Tipo', align: 'center' as const, sortable: false, key: 'film'},
+        { title: 'Tipo', align: 'center' as const, sortable: true, key: 'media_type' },
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
       ],
@@ -109,16 +119,25 @@ export default {
       search: '',
       selectedGenres: [] as string[],
       genders: '',
-      noDataMessage: 'Não foi possível encontrar nenhum resultado',
+      noDataMessage: 'Não há contéudo para ser mostrado',
       isFilter: false,
     };
   },
 
   methods: {
     loadFavoritesSeriesAndMovies() {
-      this.Series = this.store.useSeriesStore.getFavoriteSeries()
-      this.Films = this.store.useFilmsStore.getFavoriteMovies()
+      this.moviesAndSeries = [...this.store.useSeriesStore.getFavoriteSeries(), ...this.store.useFilmsStore.getFavoriteMovies()];
+      console.log(this.moviesAndSeries)
+      this.loadGenres();
     },
+
+    getTitle(item : Film){
+      return item.title || item.name
+    },
+
+    getReleaseDate(item: Film) {
+    return item.first_air_date || item.release_date 
+  },
 
     genderRender() {
       return this.SeriesGenders.map(genre => genre.name);
@@ -132,49 +151,54 @@ export default {
     },
 
     toggleFavorite(movieId: number) {
-      const movie = this.Series.find(m => m.id === movieId);
-      if (movie) {
-        movie.favorite = !movie.favorite;
-        this.store.useSeriesStore.favoriteSeries[this.currentPage] = this.Series.filter(film => film.favorite);
+  const movie = this.moviesAndSeries.find(m => m.id === movieId);
+  if (movie) {
+    movie.favorite = !movie.favorite; 
+    if (movie.favorite) {
+      if (movie.media_type === 'tv') {
+        this.store.useSeriesStore.setFavoriteSeries(movie);  
+      } else {
+        this.store.useFilmsStore.setFavoriteFilms(movie);  
       }
-    },
+    } else {
+      if (movie.media_type === 'tv') {
+        this.store.useSeriesStore.removeFavoriteSeries(movie);  
+      } else {
+        this.store.useFilmsStore.removefavoriteMovies(movie); 
+      }
+    }
+  }
+},
+
 
     loadGenres() {
-      this.Series = this.Series.map(film => {
-        if (film.genre_ids) {
-          return {
-            ...film,
-            genres: film.genre_ids.map(id => {
-              const genre = genresMoviesDB.find(g => g.id === id);
-              return genre ? genre.name : 'Outro';
-            }),
-          };
-        } else {
-          return { ...film, genres: ['Outro'] };
-        }
-      });
-      this.SeriesGenders = genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name }));
+      this.moviesAndSeries = this.moviesAndSeries.map(film => ({
+        ...film,
+        genres: film.genre_ids ? film.genre_ids.map(id => genresMoviesDB.find(g => g.id === id)?.name || 'Outro') : ['Outro'],
+      }));
     },
 
     filteredSeriesOrMovies() {
       this.isFilter = true;
       this.isLoading = true;
+
       if (this.selectedGenres.length) {
-        const filtered = this.Series.filter(film =>
+        this.moviesAndSeries = this.moviesAndSeries.filter(film =>
           this.selectedGenres.every(genre => film.genres.includes(genre))
-        );
-        if (filtered.length) {
-          this.Series = filtered;
-        } else {
-          this.noDataMessage = 'Não há séries com os gêneros selecionados';
-          this.Series = [];
-        }
-      } else {
-        this.loadFavoritesSeriesAndMovies();
-        this.isFilter = false;
+        )
       }
       this.isLoading = false;
     },
+  },
+
+  computed: {
+    store() {
+      return {
+        useSeriesStore: useSeriesStore(),
+        useFilmsStore: useFilmsStore(),
+      };
+    },
+
   },
 
   mounted() {
@@ -190,14 +214,6 @@ export default {
       }
     },
   },
-
-  computed: {
-    store() {
-      return {
-      useSeriesStore: useSeriesStore(),
-      useFilmsStore: useFilmsStore()
-      }
-    },
-  },
 };
+
 </script>

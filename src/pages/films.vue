@@ -65,7 +65,7 @@
       </template>
     </v-data-table>
 
-    <v-pagination v-if="!isFilter" :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
+    <v-pagination v-if="!isFilter && total_pages > 1"  :length="total_pages" show-first-last-page total-visible="5" v-model="currentPage"></v-pagination>
   </v-card>
 
   <v-container v-else>
