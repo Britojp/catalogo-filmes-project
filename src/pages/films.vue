@@ -62,10 +62,12 @@
 
       
         <template v-slot:item.id="{ item }">
-    <v-btn :to="{ name: 'MovieDetails', params: { id: item.id }, query: { movie: JSON.stringify(item) } }" append-icon="mdi-open-in-new">
+        <v-btn :to="`/moreDetails/${item.id}`"
+        @click="addSelectedMedia(item)"
+        append-icon="mdi-open-in-new">
       Ver mais
-    </v-btn>
-  </template>
+       </v-btn>
+        </template>
 
 
       <template v-slot:item.release_date="{ item }">
@@ -90,18 +92,9 @@ import { getAllMovies } from '@/services/api';
 import type Film from '@/types/types';
 import { genresMoviesDB } from '@/types/types';
 import { useFilmsStore } from '@/stores/filmsStore';
+import { useDetailsStore } from '@/stores/detailsStore';
 
 export default {
-  props: {
-    filmsOrSeries: {
-      type: Array as () => Film[],
-      required: true,
-    },
-    total_pages: {
-      type: Number,
-      required: true,
-    },
-  },
 
   name: 'filmsSection',
 
@@ -127,8 +120,8 @@ export default {
       genders: '',
       noDataMessage: 'Não foi possível encontrar nenhum filme',
       isFilter: false,
-      films: this.filmsOrSeries, 
-      total_pages : this.total_pages,
+      films: [] as  Film[], 
+      total_pages : 500,
     };
   },
 
@@ -138,13 +131,13 @@ export default {
       this.genders = '';
       this.selectedGenres = [];
 
-      if (!this.store.getMoviesForPage(this.currentPage).length) {
+      if (!this.store.useFilmsStore.getMoviesForPage(this.currentPage).length) {
         getAllMovies(this.currentPage)
           .then((response) => {
             this.films = response.data.results;
             this.total_pages = response.data.total_pages;
             this.loadGenres();
-            this.store.addMoviesForPage(this.currentPage, this.films);
+            this.store.useFilmsStore.addMoviesForPage(this.currentPage, this.films);
           })
           .catch((error) => {
             console.error('Erro ao carregar filmes populares:', error);
@@ -153,7 +146,7 @@ export default {
             this.isLoading = false;
           });
       } else {
-        this.films = this.store.getMoviesForPage(this.currentPage);
+        this.films = this.store.useFilmsStore.getMoviesForPage(this.currentPage);
         this.isLoading = false;
       }
     },
@@ -173,7 +166,7 @@ export default {
       const movie = this.films.find(m => m.id === movieId);
       if (movie) {
         movie.favorite = !movie.favorite;
-        this.store.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
+        this.store.useFilmsStore.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
       }
     },
 
@@ -213,6 +206,9 @@ export default {
       }
       this.isLoading = false;
     },
+    addSelectedMedia(media : Film){
+      this.store.useDetailsStore.setSelectedMedia(media)
+    }
   },
 
   mounted() {
@@ -231,7 +227,10 @@ export default {
 
   computed: {
     store() {
-      return useFilmsStore();
+      return{ 
+        useFilmsStore: useFilmsStore(),
+        useDetailsStore : useDetailsStore()
+      }
     },
   },
 };

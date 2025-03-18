@@ -1,0 +1,104 @@
+<template>
+    <v-container>
+        <v-row>
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="4">
+                        <v-img :src="`https://image.tmdb.org/t/p/w500${selectedFilmOrSeries.poster_path}`" alt="Movie poster" height="400px"></v-img>
+                    </v-col>
+                    <v-col cols="8">
+                        <v-card class="">
+                            <v-card-title class="text-h2 text-center">{{ selectedFilmOrSeries.title || selectedFilmOrSeries.name }}</v-card-title>
+                            <v-card-subtitle class="text-center">{{ converterDate(selectedFilmOrSeries.release_date || selectedFilmOrSeries.first_air_date) }}</v-card-subtitle>
+                            <v-rating :model-value="Math.ceil(selectedFilmOrSeries.vote_average / 2) == 0 ? 1 : Math.ceil(selectedFilmOrSeries.vote_average / 2)" class="me-2"
+                            color="orange" density="compact" half-increments readonly>
+                        </v-rating>
+                        
+                            <v-chip-group column>
+                            <v-chip v-for="(genre, index) in selectedFilmOrSeries.genres" :key="index" class="ma-1" color="primary" text-color="white" variant="outlined" :disabled="true">
+                            {{ genre }}
+                            </v-chip>
+                            </v-chip-group>
+                            <v-card-text>
+                                <p class="text-center"><strong>Overview:</strong> {{ selectedFilmOrSeries.overview }}</p>
+
+                                <v-btn @click="toggleFavorite(selectedFilmOrSeries.id)" :color="selectedFilmOrSeries.favorite ? 'red' : 'grey'">
+                                <v-icon :icon="selectedFilmOrSeries.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+                                </v-btn>
+                                
+                            </v-card-text>
+
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-col>
+           
+        </v-row>
+    </v-container>
+</template>
+
+<script lang="ts">
+
+import { useFilmsStore } from '@/stores/filmsStore';
+import { useSeriesStore } from '@/stores/seriesStore';
+import type Film  from '@/types/types';
+import { genresMoviesDB } from '@/types/types';
+
+export default {
+    name: 'mediaDetails',
+    props: {
+        selectedFilmOrSeries: {
+            type: Object as () => Film,
+            required: true
+        },
+    },
+    data() {
+        return {
+            moviesAndSeries: [] as Film[],
+            SeriesGenders: [
+            ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
+          ],
+          movieAndSeries : [] as Film[],
+        };
+    },
+
+    methods : {
+    converterDate(release_date: string) {
+      if (!release_date) {
+        return 'Sem data';  
+      }
+      return release_date.split('-').reverse().join('/');
+    },
+    
+    toggleFavorite(movieId: number) {
+    const seriesStore = useSeriesStore();
+    const filmsStore = useFilmsStore();
+    this.moviesAndSeries = [...seriesStore.getFavoriteSeries(), ...filmsStore.getFavoriteMovies()];
+    const movie = this.moviesAndSeries.find(m => m.id === movieId);
+    if (movie) {
+      movie.favorite = !movie.favorite; 
+      if (movie.favorite) {
+          if (movie.media_type === 'tv') {
+              seriesStore.setFavoriteSeries(movie);  
+          } else {
+              filmsStore.setFavoriteFilms(movie);  
+          }
+      } else {
+          if (movie.media_type === 'tv') {
+              seriesStore.removeFavoriteSeries(movie);  
+          } else {
+              filmsStore.removefavoriteMovies(movie); 
+          }
+      }
+  }
+},
+    },
+
+
+};
+
+</script>
+  
+<style scoped>
+
+</style>
