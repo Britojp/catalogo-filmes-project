@@ -76,6 +76,15 @@
         </v-chip>
       </template>
 
+      <template v-slot:item.id="{ item }">
+        <v-btn :to="`/moreDetails/${item.id}`"
+        @click="addSelectedMedia(item)"
+        append-icon="mdi-open-in-new">
+      Ver mais
+       </v-btn>
+        </template>
+
+
     </v-data-table>
 
 
@@ -95,6 +104,7 @@ import type Film from '@/types/types';
 import { genresMoviesDB } from '@/types/types';
 import { useSeriesStore } from '@/stores/seriesStore';
 import {useFilmsStore} from '@/stores/filmsStore';
+import { useDetailsStore } from '@/stores/detailsStore';
 
 export default {
   name: 'SeriesSection',
@@ -111,6 +121,7 @@ export default {
         { title: 'Tipo', align: 'center' as const, sortable: true, key: 'media_type' },
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
+        {title: 'Ver mais', align:'center' as const, key: 'id'},
       ],
       SeriesGenders: [
         ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
@@ -126,8 +137,7 @@ export default {
 
   methods: {
     loadFavoritesSeriesAndMovies() {
-      this.moviesAndSeries = [...this.store.useSeriesStore.getFavoriteSeries(), ...this.store.useFilmsStore.getFavoriteMovies()];
-      console.log(this.moviesAndSeries)
+      this.moviesAndSeries = [...this.store.useSeriesStore.getFavoriteSerie(), ...this.store.useFilmsStore.getFavoriteMovies()];
       this.loadGenres();
     },
 
@@ -162,7 +172,7 @@ export default {
       }
     } else {
       if (movie.media_type === 'tv') {
-        this.store.useSeriesStore.removeFavoriteSeries(movie);  
+        this.store.useSeriesStore.removefavoriteSerie(movie);  
       } else {
         this.store.useFilmsStore.removefavoriteMovies(movie); 
       }
@@ -196,6 +206,9 @@ export default {
       }
       this.isLoading = false;
     },
+    addSelectedMedia(media : Film){
+      this.store.useDetailsStore.setSelectedMedia(media)
+    },
   },
 
   computed: {
@@ -203,6 +216,7 @@ export default {
       return {
         useSeriesStore: useSeriesStore(),
         useFilmsStore: useFilmsStore(),
+        useDetailsStore: useDetailsStore(),
       };
     },
 

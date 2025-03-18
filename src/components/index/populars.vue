@@ -31,6 +31,7 @@
                     scrim="#000000"
                     contained
                     >
+
                   <v-card-text>
                     <h2 class="text-h6 text-primary">{{ items.title || items.name }}</h2>
                     <p>
@@ -45,7 +46,7 @@
                       {{ expanded.has(items.id) ? "Ver menos" : "Ver mais" }}
                     </v-btn>
 
-          
+      
                   </v-card-text>
                   <v-card-title>
                     <v-rating
@@ -56,7 +57,24 @@
                       half-increments
                       readonly
                     />
+                    
                   </v-card-title>
+
+                  <v-btn variant="plain"
+                    :to="`/moreDetails/${items.id}`"
+                    @click="addSelectedMedia(items)"
+                    >
+                    <v-icon>
+                    mdi-open-in-new
+                  </v-icon>
+                </v-btn>
+
+                <v-btn variant="plain" @click="toggleFavorite(items.id)" :color="items.favorite ? 'red' : 'grey'">
+                    
+                    <v-icon :icon="items.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+                </v-btn>
+
+
                 </v-overlay>
                 </v-card>
               </v-hover>
@@ -69,7 +87,10 @@
     </v-container>
   </template>
 <script lang="ts">
+import { useDetailsStore } from "@/stores/detailsStore";
 import type Film from "../../types/types";
+import { useFilmsStore } from "@/stores/filmsStore";
+import { useSeriesStore } from "@/stores/seriesStore";
 
 export default {
   props:{
@@ -95,6 +116,7 @@ export default {
     return {
       currentSlide: 0,
       expanded: new Set<number>(),
+      moviesAndSeries: [] as Film[],
     };
   },
   computed: {
@@ -124,6 +146,33 @@ export default {
         this.expanded.add(items.id);
       }
     },
+    addSelectedMedia(media : Film){
+      useDetailsStore().setSelectedMedia(media)
+    },
+    toggleFavorite(movieId: number) {
+    const seriesStore = useSeriesStore();
+    const filmsStore = useFilmsStore();
+    this.moviesAndSeries = [...seriesStore.getAllSerie(), ...filmsStore.getAllMovies()];
+
+    const movie = this.moviesAndSeries.find(m => m.id === movieId);
+    if (movie) {
+      movie.favorite = !movie.favorite; 
+      if (movie.favorite) {
+          if (movie.media_type === 'tv') {
+              seriesStore.setFavoriteSeries(movie);  
+          } else {
+              filmsStore.setFavoriteFilms(movie);  
+          }
+        } else {
+            if (movie.media_type === 'tv') {
+                seriesStore.removefavoriteSerie(movie);  
+            } else {
+                filmsStore.removefavoriteMovies(movie); 
+            }
+      }
+  }
+},
+    
   },
 };
 </script>

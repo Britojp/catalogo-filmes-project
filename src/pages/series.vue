@@ -61,10 +61,12 @@
       </template>
      
       <template v-slot:item.id="{ item }">
-        <v-btn :to="{ name: 'MovieDetails', params: { id: item.id } }" append-icon="mdi-open-in-new">
-          Ver mais
-        </v-btn>
-      </template>
+        <v-btn :to="`/moreDetails/${item.id}`"
+        @click="addSelectedMedia(item)"
+        append-icon="mdi-open-in-new">
+      Ver mais
+       </v-btn>
+        </template>
 
 
       <template v-slot:item.release_date="{ item }">
@@ -93,6 +95,7 @@ import { getAllSeries } from '@/services/api';
 import type Film from '@/types/types';
 import { genresMoviesDB } from '@/types/types';
 import { useSeriesStore } from '@/stores/seriesStore';
+import { useDetailsStore } from '@/stores/detailsStore';
 
 export default {
   name: 'SeriesSection',
@@ -131,13 +134,13 @@ export default {
       this.genders = '';
       this.selectedGenres = [];
 
-      if (!this.store.getSeriesForPage(this.currentPage).length) {
+      if (!this.store.useSeriesStore.getSerieForPage(this.currentPage).length) {
         getAllSeries(this.currentPage)
           .then((response) => {
             this.Series = response.data.results;
             this.total_pages = response.data.total_pages;
             this.loadGenres();
-            this.store.addSeriesForPage(this.currentPage, this.Series);
+            this.store.useSeriesStore.addSerieForPage(this.currentPage, this.Series);
           })
           .catch((error) => {
             console.error('Erro ao carregar as séries populares:', error);
@@ -146,7 +149,7 @@ export default {
             this.isLoading = false;
           });
       } else {
-        this.Series = this.store.getSeriesForPage(this.currentPage);
+        this.Series = this.store.useSeriesStore.getSerieForPage(this.currentPage);
         this.isLoading = false;
       }
     },
@@ -166,7 +169,10 @@ export default {
       const movie = this.Series.find(m => m.id === movieId);
       if (movie) {
         movie.favorite = !movie.favorite;
-        this.store.favoriteSeries[this.currentPage] = this.Series.filter(film => film.favorite);
+        this.store.useSeriesStore.favoriteSerie = {
+          ...this.store.useSeriesStore.favoriteSerie,
+          [this.currentPage]: this.Series.filter(film => film.favorite)
+        };
       }
     },
 
@@ -206,6 +212,9 @@ export default {
       }
       this.isLoading = false;
     },
+    addSelectedMedia(media : Film){
+      this.store.useDetailsStore.setSelectedMedia(media)
+    },
   },
 
   mounted() {
@@ -224,7 +233,10 @@ export default {
 
   computed: {
     store() {
-      return useSeriesStore();
+      return{ 
+        useSeriesStore: useSeriesStore(),
+        useDetailsStore: useDetailsStore(),
+      }
     },
   },
 };

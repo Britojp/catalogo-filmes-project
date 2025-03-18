@@ -1,81 +1,87 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
 
-
-export const useSeriesStore = defineStore('SeriesStore', {
+export const useSeriesStore = defineStore('seriesStore', {
   state() {
     return {
-      allSeries: {} as Record<number, Film[]>,
-      favoriteSeries: {} as Record<number, Film[]>,  
-     
+      allSerie: {} as Record<number, Film[]>,
+      favoriteSerie: new Set<number>(),  
+      favoriteSerieTemp: [] as Film[],   
     };
   },
+
   actions: {
+    addSerieForPage(page: number, Serie: Film[]) {
+      const favoriteSerieForPage = this.favoriteSerieTemp.filter((serie) => this.favoriteSerie.has(serie.id));
 
-  addSeriesForPage(page: number, Series: Film[]) {
-    const favoriteSeriesForPage = this.favoriteSeries[page] || [];
-    Series.forEach(serie => {
-      if (favoriteSeriesForPage.some((favserie: Film) => favserie.id === serie.id)) {
-        serie.favorite = true;
-      }
-    });
-    this.allSeries[page] = Series;
-    this.removeSeries();
-  },
+      Serie.forEach(serie => {
+        if (this.favoriteSerie.has(serie.id)) {
+          serie.favorite = true;
+        }
+      });
 
-  removeSeries() {
-    if (Object.keys(this.allSeries).length > 4) {
-      const firstPage = Math.min(...Object.keys(this.allSeries).map(Number));
-      delete this.allSeries[firstPage];
-    }
-  },
-  setFavoriteSeries(serie: Film) {
-    for (const page in this.allSeries) {
-      const Series = this.allSeries[page];
-      const serieToUpdate = Series.find((m: Film) => m.id === serie.id);
-      if (serieToUpdate) {
-        serieToUpdate.favorite = true;
-        break;
+      this.allSerie[page] = Serie;
+      this.removeSeries();
+    },
+
+    removeSeries() {
+      if (Object.keys(this.allSerie).length > 4) {
+        const firstPage = Math.min(...Object.keys(this.allSerie).map(Number));
+        delete this.allSerie[firstPage];
       }
-    }
-    this.setFavoriteListSeries();
-  },
-  setFavoriteListSeries(){
-    this.favoriteSeries = Object.fromEntries(
-      Object.entries(this.allSeries).map(([page, Series]) => [
-        page,
-        Series.filter((serie: Film) => serie.favorite),
-      ])
-    );
-  },
-  removeFavoriteSeries(serie: Film) {
-    for (const page in this.allSeries) {
-      const Series = this.allSeries[page];
-      const serieToUpdate = Series.find((m: Film) => m.id === serie.id);
-      if (serieToUpdate) {
-        serieToUpdate.favorite = false;
-        break;
+    },
+
+    setFavoriteSeries(serie: Film) {
+      this.favoriteSerie.add(serie.id); 
+
+      for (const page in this.allSerie) {
+        const serieToUpdate = this.allSerie[page].find((m: Film) => m.id === serie.id);
+        if (serieToUpdate) {
+          serieToUpdate.favorite = true;
+          break;
+        }
       }
-    }
-    this.updateFavoriteSeries();
+
+      this.updateFavoriteSerie();
+    },
+
+    removefavoriteSerie(serie: Film) {
+      this.favoriteSerie.delete(serie.id);  
+
+      for (const page in this.allSerie) {
+        const serieToUpdate = this.allSerie[page].find((m: Film) => m.id === serie.id);
+        if (serieToUpdate) {
+          serieToUpdate.favorite = false;
+          break;
+        }
+      }
+
+      this.updateFavoriteSerie();
+    },
+
+    updateFavoriteSerie() {
+      this.favoriteSerieTemp.forEach((serie) => {
+        if (serie.favorite) {
+          this.favoriteSerie.add(serie.id);
+        }
+      });
+
+      this.favoriteSerieTemp = this.favoriteSerieTemp.filter((serie) => this.favoriteSerie.has(serie.id));
+    },
   },
-  updateFavoriteSeries() {
-    this.favoriteSeries = Object.fromEntries(
-      Object.entries(this.allSeries).map(([page, Series]) => [
-        page,
-        Series.filter((serie: Film) => serie.favorite),
-      ])
-    );
-  },
-},
 
   getters: {
-    getSeriesForPage: (state) => (page: number): Film[] => {
-      return state.allSeries[page] || [];
+    getSerieForPage: (state) => (page: number): Film[] => {
+      return state.allSerie[page] || [];
     },
-    getFavoriteSeries : (state) => () : Film[] => {
-      return Object.values(state.favoriteSeries).flat();
-    }
+
+    getFavoriteSerie : (state) => () : Film[] => {
+      return Object.values(state.favoriteSerie).flat();
+    },
+
+    getAllSerie: (state) => (): Film[] => {
+      return Object.values(state.allSerie).flat();
+    },
   },
 
   persist: true,
