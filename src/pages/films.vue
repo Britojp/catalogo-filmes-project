@@ -45,7 +45,7 @@
       </template>
 
       <template v-slot:item.poster_path="{ item }">
-        <v-img :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" alt="Poster do filme" width="100"></v-img>
+        <v-img :src="item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'" alt="Poster do filme" width="100"></v-img>
       </template>
 
       <template v-slot:item.vote_average="{ item }">
@@ -166,7 +166,10 @@ export default {
       const movie = this.films.find(m => m.id === movieId);
       if (movie) {
         movie.favorite = !movie.favorite;
-        this.store.useFilmsStore.favoriteMovies[this.currentPage] = this.films.filter(film => film.favorite);
+        this.store.useFilmsStore.favoriteMovies = {
+          ...this.store.useFilmsStore.favoriteMovies,
+          [this.currentPage]: this.films.filter(film => film.favorite)
+        };
       }
     },
 

@@ -58,7 +58,7 @@ export const useSeriesStore = defineStore('seriesStore', {
 
       this.updateFavoriteSerie();
     },
-    addPopularsFilms(series: Film[]) {
+    addPopularsSeries(series: Film[]) {
     
           series.forEach(serie => {
             if (this.favoriteSerie.has(serie.id)) {

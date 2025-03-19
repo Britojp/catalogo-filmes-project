@@ -21,19 +21,19 @@ export const useFilmsStore = defineStore('filmsStore', {
       });
 
       this.allMovies[page] = movies;
-      this.removeFilms();
     },
-    addPopularsFilms(movies: Film[]) {
+
+    addPopularFilms(movies: Film[]) {
 
       movies.forEach(movie => {
         if (this.favoriteMovies.has(movie.id)) {
           movie.favorite = true;
         }
       });
-
-      this.favoriteMoviesTemp = movies;
+      this.popularsFilms = movies;
       this.removeFilms();
     },
+    
     removeFilms() {
       if (Object.keys(this.allMovies).length > 4) {
         const firstPage = Math.min(...Object.keys(this.allMovies).map(Number));

@@ -18,7 +18,7 @@ export const getMostPopularMovies = async (page: number = 1) => {
                 page
             }
         });
-        
+        console.log('chamou api films')
         return response.data;
         
         } catch (error) {
@@ -35,6 +35,7 @@ export const getMostPopularSeries = async (page: number = 1) => {
         }
     });
     
+    console.log('chamou api series')
     return response.data;
     } catch (error) {
         console.error('Erro ao buscar séries populares:', error);

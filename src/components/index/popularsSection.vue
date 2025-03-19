@@ -45,8 +45,10 @@ methods : {
       this.loading = true;
       
       if(!this.store.useFilmsStore.getPopularMovies().length){
-      getMostPopularMovies(1).then((data) =>{
+      getMostPopularMovies(1)
+      .then((data) =>{
       this.popularsFilms = data.results;
+      this.store.useFilmsStore.addPopularFilms(this.popularsFilms);
     }).catch((error) => {
 
       console.error("Erro ao carregar filmes populares:", error);
@@ -54,7 +56,7 @@ methods : {
       this.loading = false;
     })
   }else{
-    this.popularsFilms = this.store.useFilmsStore.getFavoriteMovies();
+    this.popularsFilms = this.store.useFilmsStore.getPopularMovies();
     this.loading = false;
   }
       },
@@ -65,13 +67,15 @@ methods : {
       if(!this.store.useSerieStore.getPopularSeries().length){
         getMostPopularSeries(1).then((data) =>{
         this.popularsTV = data.results;
+        this.store.useSerieStore.addPopularsSeries(this.popularsTV);
       }).catch ((error) => {
         console.error("Erro ao carregar séries populares:", error);
     }).finally(() =>{
+      this.popularsTV = this.store.useSerieStore.getPopularSeries();
       this.loading = false;
     })
   }else{
-    this.popularsTV = this.store.useSerieStore.getFavoriteSerie();
+    this.popularsTV = this.store.useSerieStore.getPopularSeries();
     this.loading = false;
     }
   }
