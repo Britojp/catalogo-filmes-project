@@ -24,6 +24,8 @@
 <script lang="ts">
 import { getMostPopularMovies, getMostPopularSeries } from "@/services/api";
 import type Film from '../../types/types'
+import { useFilmsStore } from "@/stores/filmsStore";
+import { useSeriesStore } from "@/stores/seriesStore";
 export default {
   data() {
     return {
@@ -41,6 +43,8 @@ mounted() {
 methods : {
     loadPopularMovies() {
       this.loading = true;
+      
+      if(!this.store.useFilmsStore.getPopularMovies().length){
       getMostPopularMovies(1).then((data) =>{
       this.popularsFilms = data.results;
     }).catch((error) => {
@@ -49,9 +53,16 @@ methods : {
     }).finally(() => {
       this.loading = false;
     })
+  }else{
+    this.popularsFilms = this.store.useFilmsStore.getFavoriteMovies();
+    this.loading = false;
+  }
       },
+
+
     loadPopularSeries() {
       this.loading = true;
+      if(!this.store.useSerieStore.getPopularSeries().length){
         getMostPopularSeries(1).then((data) =>{
         this.popularsTV = data.results;
       }).catch ((error) => {
@@ -59,8 +70,20 @@ methods : {
     }).finally(() =>{
       this.loading = false;
     })
-    },
+  }else{
+    this.popularsTV = this.store.useSerieStore.getFavoriteSerie();
+    this.loading = false;
+    }
+  }
+},
+computed: {
+  store() {
+    return{ 
+      useFilmsStore: useFilmsStore(),
+      useSerieStore: useSeriesStore()
+    }
   },
+},
 }
 
 </script>

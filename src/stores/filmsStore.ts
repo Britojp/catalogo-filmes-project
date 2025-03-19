@@ -7,6 +7,7 @@ export const useFilmsStore = defineStore('filmsStore', {
       allMovies: {} as Record<number, Film[]>,
       favoriteMovies: new Set<number>(),  
       favoriteMoviesTemp: [] as Film[],   
+      popularsFilms : [] as Film[]
     };
   },
 
@@ -22,7 +23,17 @@ export const useFilmsStore = defineStore('filmsStore', {
       this.allMovies[page] = movies;
       this.removeFilms();
     },
+    addPopularsFilms(movies: Film[]) {
 
+      movies.forEach(movie => {
+        if (this.favoriteMovies.has(movie.id)) {
+          movie.favorite = true;
+        }
+      });
+
+      this.favoriteMoviesTemp = movies;
+      this.removeFilms();
+    },
     removeFilms() {
       if (Object.keys(this.allMovies).length > 4) {
         const firstPage = Math.min(...Object.keys(this.allMovies).map(Number));
@@ -80,6 +91,9 @@ export const useFilmsStore = defineStore('filmsStore', {
 
     getAllMovies: (state) => (): Film[] => {
       return Object.values(state.allMovies).flat();
+    },   
+     getPopularMovies: (state) => (): Film[] => {
+      return state.popularsFilms;
     },
   },
 

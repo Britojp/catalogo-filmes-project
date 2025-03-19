@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
+import { getMostPopularSeries } from '@/services/api';
 
 export const useSeriesStore = defineStore('seriesStore', {
   state() {
@@ -7,13 +8,12 @@ export const useSeriesStore = defineStore('seriesStore', {
       allSerie: {} as Record<number, Film[]>,
       favoriteSerie: new Set<number>(),  
       favoriteSerieTemp: [] as Film[],   
+      popularsSeries : [] as Film[],
     };
   },
 
   actions: {
     addSerieForPage(page: number, Serie: Film[]) {
-      const favoriteSerieForPage = this.favoriteSerieTemp.filter((serie) => this.favoriteSerie.has(serie.id));
-
       Serie.forEach(serie => {
         if (this.favoriteSerie.has(serie.id)) {
           serie.favorite = true;
@@ -58,6 +58,17 @@ export const useSeriesStore = defineStore('seriesStore', {
 
       this.updateFavoriteSerie();
     },
+    addPopularsFilms(series: Film[]) {
+    
+          series.forEach(serie => {
+            if (this.favoriteSerie.has(serie.id)) {
+              serie.favorite = true;
+            }
+          });
+    
+          this.popularsSeries = series;
+          this.removeSeries();
+        },
 
     updateFavoriteSerie() {
       this.favoriteSerieTemp.forEach((serie) => {
@@ -82,6 +93,9 @@ export const useSeriesStore = defineStore('seriesStore', {
     getAllSerie: (state) => (): Film[] => {
       return Object.values(state.allSerie).flat();
     },
+    getPopularSeries:(state) => (): Film[] => {
+      return state.popularsSeries;
+    }
   },
 
   persist: true,
