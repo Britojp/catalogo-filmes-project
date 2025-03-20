@@ -1,11 +1,15 @@
+<!-- eslint-disable vue/valid-v-slot -->
 <template>
-  <v-card flat v-if="!isLoading">
+  <v-card
+    v-if="!isLoading"
+    flat
+  >
     <v-card-title class="d-flex align-center pe-2">
       <v-select 
-        prepend-inner-icon="mdi-filter"
-        label="Filtrar por gênero" 
-        :items="genderRender()"
-        v-model="selectedGenres" 
+        v-model="selectedGenres"
+        prepend-inner-icon="mdi-filter" 
+        label="Filtrar por gênero"
+        :items="genderRender()" 
         item-value="id"
         multiple 
         variant="solo-filled" 
@@ -15,87 +19,125 @@
         density="compact" 
         :menu-props="{ maxHeight: '200px' }" 
         chips
-        :style="{ width: '300px' }">
-      </v-select>
+        :style="{ width: '300px' }"
+      />
 
-      <v-btn @click="filteredSeriesAndMovies()" color="primary">
+      <v-btn
+        color="primary"
+        @click="filteredSeriesAndMovies()"
+      >
         Procurar
       </v-btn>
 
-      <v-spacer></v-spacer>
-      <v-text-field v-model="search" density="compact" label="Pesquisar" prepend-inner-icon="mdi-magnify"
-        variant="solo-filled" flat hide-details single-line class="mx-2"></v-text-field>
+      <v-spacer />
+      <v-text-field
+        v-model="search"
+        density="compact"
+        label="Pesquisar"
+        prepend-inner-icon="mdi-magnify"
+        variant="solo-filled"
+        flat
+        hide-details
+        single-line
+        class="mx-2"
+      />
     </v-card-title>
 
-    <v-divider></v-divider>
+    <v-divider />
 
-    <v-data-table v-model:search="search" 
+    <v-data-table
+      v-model:search="search" 
       :no-data-text="noDataMessage"
       :filter-keys="['title', 'name']"
       hide-default-footer 
       :headers="headers"
       :items="moviesAndSeries"
       :items-per-page="-1"
-      density="compact" item-key="title">
-    
-      <template v-slot:item.title="{ item }">
+      density="compact"
+      item-key="title"
+    >
+      <template #item.title="{ item }">
         <p>{{ getTitle(item) }}</p>
       </template>
 
 
-      <template v-slot:item.genres="{ item }">
+      <template #item.genres="{ item }">
         <v-chip-group column>
-          <v-chip v-for="(genre, index) in item.genres" :key="index" class="ma-1" color="primary" text-color="white" variant="outlined" :disabled="true">
+          <v-chip
+            v-for="(genre, index) in item.genres"
+            :key="index"
+            class="ma-1"
+            color="primary"
+            text-color="white"
+            variant="outlined"
+            :disabled="true"
+          >
             {{ genre }}
           </v-chip>
         </v-chip-group>
       </template>
 
-      <template v-slot:item.poster_path="{ item }">
-        <v-img :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`" alt="Poster do filme" width="100"></v-img>
+      <template #item.poster_path="{ item }">
+        <v-img
+          :src="`https://image.tmdb.org/t/p/w500${item.poster_path}`"
+          alt="Poster do filme"
+          width="100"
+        />
       </template>
 
-      <template v-slot:item.vote_average="{ item }">
-        <v-rating :model-value="Math.ceil(item.vote_average / 2) == 0 ? 1 : Math.ceil(item.vote_average / 2)" class="me-2"
-          color="orange" density="compact" half-increments readonly>
-        </v-rating>
+      <template #item.vote_average="{ item }">
+        <v-rating
+          :model-value="Math.ceil(item.vote_average / 2) == 0 ? 1 : Math.ceil(item.vote_average / 2)"
+          class="me-2"
+          color="orange"
+          density="compact"
+          half-increments
+          readonly
+        />
       </template>
 
-      <template v-slot:item.favorite="{ item }">
-        <v-btn @click="toggleFavorite(item)" :color="item.favorite ? 'red' : 'grey'">
-          <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+      <template #item.favorite="{ item }">
+        <v-btn
+          :color="item.favorite ? 'red' : 'grey'"
+          @click="toggleFavorite(item)"
+        >
+          <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'" />
         </v-btn>
       </template>
 
-      <template v-slot:item.release_date="{ item }">
+      <template #item.release_date="{ item }">
         <p>{{ converterDate(getReleaseDate(item)) }}</p>
       </template>
 
-      <template v-slot:item.media_type="{ item }">
-        <v-chip :color="item.media_type === 'movie' ? 'blue' : 'green'" text-color="white">
-          {{ item.media_type === 'movie' ? 'Filme' : 'Série' }}
+      <template #item.media_type="{ item }">
+        <v-chip
+          :color="item.title ? 'blue' : 'green'"
+          text-color="white"
+        >
+          {{ item.title ? 'Filme' : 'Série' }}
         </v-chip>
       </template>
 
-      <template v-slot:item.id="{ item }">
-        <v-btn :to="`/moreDetails/${item.id}`"
-        @click="addSelectedMedia(item)"
-        append-icon="mdi-open-in-new">
-      Ver mais
-       </v-btn>
-    
-        </template>
-
-
+      <template #item.id="{ item }">
+        <v-btn
+          :to="`/moreDetails/${item.id}`"
+          append-icon="mdi-open-in-new"
+          @click="addSelectedMedia(item)"
+        >
+          Ver mais
+        </v-btn>
+      </template>
     </v-data-table>
-
-
   </v-card>
 
   <v-container v-else>
     <v-row>
       <v-col>
-        <v-skeleton-loader class="mx-auto border" type="table-tbody" :loading="isLoading"></v-skeleton-loader>
+        <v-skeleton-loader
+          class="mx-auto border"
+          type="table-tbody"
+          :loading="isLoading"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -137,6 +179,31 @@ export default {
     };
   },
 
+  computed: {
+    store() {
+      return {
+        useSeriesStore: useSeriesStore(),
+        useFilmsStore: useFilmsStore(),
+        useDetailsStore: useDetailsStore(),
+      };
+    },
+
+  },
+
+  watch: {
+    currentPage() {
+      if (!this.isFilter) {
+        this.loadFavoritesSeriesAndMovies();
+      } else {
+        this.filteredSeriesAndMovies();
+      }
+    },
+  },
+
+  mounted() {
+    this.loadFavoritesSeriesAndMovies();
+  },
+
   methods: {
     loadFavoritesSeriesAndMovies() {
       this.moviesAndSeries = [...this.store.useSeriesStore.getFavoriteSerie(), ...this.store.useFilmsStore.getFavoriteMovies()];
@@ -164,15 +231,13 @@ export default {
 
 toggleFavorite(movieFavorite: Film) {
   const movie = this.moviesAndSeries.find(m => m.id === movieFavorite.id);
-    if (movie) {
-      movie.favorite = !movie.favorite;
-    }
-  if(movie && movie?.media_type  === 'tv'){
-    this.store.useSeriesStore.toggleFavorite(movieFavorite)
-  }else{
-    this.store.useFilmsStore.toggleFavorite(movieFavorite)
-  } 
-},
+
+    if(movie && movie?.media_type  === 'tv'){
+      this.store.useSeriesStore.toggleFavoriteNoPage(movieFavorite)
+    }else{
+      this.store.useFilmsStore.toggleFavoriteNoPage(movieFavorite)
+    } 
+  },
 
 
     loadGenres() {
@@ -202,31 +267,6 @@ toggleFavorite(movieFavorite: Film) {
     },
     addSelectedMedia(media : Film){
       this.store.useDetailsStore.setSelectedMedia(media)
-    },
-  },
-
-  computed: {
-    store() {
-      return {
-        useSeriesStore: useSeriesStore(),
-        useFilmsStore: useFilmsStore(),
-        useDetailsStore: useDetailsStore(),
-      };
-    },
-
-  },
-
-  mounted() {
-    this.loadFavoritesSeriesAndMovies();
-  },
-
-  watch: {
-    currentPage() {
-      if (!this.isFilter) {
-        this.loadFavoritesSeriesAndMovies();
-      } else {
-        this.filteredSeriesAndMovies();
-      }
     },
   },
 };

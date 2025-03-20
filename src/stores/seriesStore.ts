@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
-import { getMostPopularSeries } from '@/services/api';
-import Series from '@/pages/series.vue';
+
+
 
 export const useSeriesStore = defineStore('seriesStore', {
   state() {
@@ -53,7 +53,7 @@ export const useSeriesStore = defineStore('seriesStore', {
           serieToUpdate.favorite = !serieToUpdate.favorite;
         }
 
-        if(serieToUpdate?.favorite){
+        if(serieToUpdate && serieToUpdate.favorite){
           this.favoriteSerie.push(serieToUpdate);
         }else{
           const index = this.favoriteSerie.findIndex(favorite => favorite.id === serieToUpdate?.id);
@@ -64,20 +64,19 @@ export const useSeriesStore = defineStore('seriesStore', {
 
       }
     },
-
     addPopularsSeries(series: Film[]) {
     
-          series.forEach(serie => {
-            if (this.favoriteSerie.some(favorite => favorite.id === serie.id)) {
-              serie.favorite = true;
-            }
-          });
-    
-          this.popularsSeries = series;
-          this.removeSeries();
-        },
-
-   
+      if (Array.isArray(this.favoriteSerie)) {
+        series.forEach(serie => {
+          if (this.favoriteSerie.some(s => s.id === serie.id)) {
+            serie.favorite = true;
+          }
+        });
+      } else {
+        this.favoriteSerie = [];
+      }
+      this.popularsSeries = series;
+    }
   },
 
   getters: {

@@ -25,6 +25,14 @@ export const useFilmsStore = defineStore('filmsStore', {
       this.allMovies[page] = movies;
     },
     
+    removeFilms() {
+      if (Object.keys(this.allMovies).length > 4) {
+        const firstPage = Math.min(...Object.keys(this.allMovies).map(Number));
+        delete this.allMovies[firstPage];
+      }
+    },
+
+    
         toggleFavoriteNoPage(Movies: Film){
           
           Movies.favorite = !Movies.favorite
@@ -38,24 +46,37 @@ export const useFilmsStore = defineStore('filmsStore', {
           }
         },
     
+        toggleFavorite(Movies: Film){
+              for(const page in this.allMovies){
+                const MoviesToUpdate = this.allMovies[page].find((m:Film) => m.id === Movies.id)
+                if(MoviesToUpdate){
+                  MoviesToUpdate.favorite = !MoviesToUpdate.favorite;
+               }
+                if(MoviesToUpdate?.favorite){
+                  this.favoriteMovies.push(MoviesToUpdate);
+                }else{
+                  const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate?.id);
+                  if (index !== -1) {
+                    this.favoriteMovies.splice(index, 1);
+                  }
+                }
+        
+              }
+            },
 
-    addPopularFilms(movies: Film[]) {
-
-      movies.forEach(movie => {
-        if (this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
-          movie.favorite = true;
-        }
-      });
-      this.popularsFilms = movies;
-      this.removeFilms();
-    },
+        addPopularFilms(movies: Film[]) {
+          if (Array.isArray(this.favoriteMovies)) {
+            movies.forEach(movie => {
+              if (this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
+                movie.favorite = true;
+              }
+            });
+          } else {
+            this.favoriteMovies = [];
+          }
+          this.popularsFilms = movies;
+        },
     
-    removeFilms() {
-      if (Object.keys(this.allMovies).length > 4) {
-        const firstPage = Math.min(...Object.keys(this.allMovies).map(Number));
-        delete this.allMovies[firstPage];
-      }
-    },
 
     setFavoriteFilms(movie: Film) {
       if (!this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
@@ -71,23 +92,6 @@ export const useFilmsStore = defineStore('filmsStore', {
       }
     },
     
-    toggleFavorite(Movies: Film){
-          for(const page in this.allMovies){
-            const MoviesToUpdate = this.allMovies[page].find((m:Film) => m.id === Movies.id)
-            if(MoviesToUpdate){
-              MoviesToUpdate.favorite = !MoviesToUpdate.favorite;
-           }
-            if(MoviesToUpdate?.favorite){
-              this.favoriteMovies.push(MoviesToUpdate);
-            }else{
-              const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate?.id);
-              if (index !== -1) {
-                this.favoriteMovies.splice(index, 1);
-              }
-            }
-    
-          }
-        },
 
     removefavoriteMovies(movie: Film) {
       this.favoriteMovies = this.favoriteMovies.filter(favoriteMovie => favoriteMovie.id !== movie.id);  

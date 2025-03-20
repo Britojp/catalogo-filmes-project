@@ -1,22 +1,39 @@
 <template>
+  <template
+    v-for="n in 4"
+    v-if="loading"
+    :key="n"
+  >
+    <v-row class="my-4">
+      <v-col
+        v-for="n in 4"
+        :key="n"
+        cols="12"
+        md="3"
+        class="pa-2"
+      >
+        <v-skeleton-loader
+          class="mx-auto border"
+          max-width="100%"
+          height="400"
+          type="image"
+        />
+      </v-col>
+    </v-row>
+  </template>
 
-<template v-if="loading" v-for="n in 2" :key="n">
-  <v-row class="my-4">
-    <v-col cols="12" md="3" class="pa-2" v-for="n in 4" :key="n">
-      <v-skeleton-loader
-        class="mx-auto border"
-        max-width="100%"
-        height="400"
-        type="image"
-      ></v-skeleton-loader>
-    </v-col>
-  </v-row>
-</template>
-
-<template v-else>
-  <Populars title="Filmes Famosos" description="Confira os filmes mais populares do momento" :populars="popularsFilms"/>
-  <Populars title="Séries Famosas" description="Descubra as séries mais assistidas atualmente" :populars="popularsTV" />
-</template>
+  <template v-else>
+    <Populars
+      title="Filmes Famosos"
+      description="Confira os filmes mais populares do momento"
+      :populars="popularsFilms"
+    />
+    <Populars
+      title="Séries Famosas"
+      description="Descubra as séries mais assistidas atualmente"
+      :populars="popularsTV"
+    />
+  </template>
 </template>
 
 
@@ -34,52 +51,6 @@ export default {
       loading : false,
     };
   },
-
-
-mounted() {
-    this.loadPopularMovies();
-    this.loadPopularSeries();
-  },
-methods : {
-    loadPopularMovies() {
-      this.loading = true;
-      
-      if(!this.store.useFilmsStore.getPopularMovies().length){
-      getMostPopularMovies(1)
-      .then((data) =>{
-      this.popularsFilms = data.results;
-      this.store.useFilmsStore.addPopularFilms(this.popularsFilms);
-    }).catch((error) => {
-
-      console.error("Erro ao carregar filmes populares:", error);
-    }).finally(() => {
-      this.loading = false;
-    })
-  }else{
-    this.popularsFilms = this.store.useFilmsStore.getPopularMovies();
-    this.loading = false;
-  }
-      },
-
-
-    loadPopularSeries() {
-      this.loading = true;
-      if(!this.store.useSerieStore.getPopularSeries().length){
-        getMostPopularSeries(1).then((data) =>{
-        this.popularsTV = data.results;
-        this.store.useSerieStore.addPopularsSeries(this.popularsTV);
-      }).catch ((error) => {
-        console.error("Erro ao carregar séries populares:", error);
-    }).finally(() =>{
-      this.popularsTV = this.store.useSerieStore.getPopularSeries();
-      this.loading = false;
-    })
-  }else{
-    this.popularsTV = this.store.useSerieStore.getPopularSeries();
-    this.loading = false;
-    }
-  }
-},
 computed: {
   store() {
     return{ 
@@ -88,6 +59,63 @@ computed: {
     }
   },
 },
+
+
+mounted() {
+  this.loadPopularMovies();
+  this.loadPopularSeries();
+},
+methods : {
+ 
+  loadPopularMovies() {
+      this.loading = true;    
+      getMostPopularMovies(1)
+      .then((data) =>{
+      this.popularsFilms = data.results;
+      this.store.useFilmsStore.addPopularFilms(this.popularsFilms);
+      this.verifyFavorites(this.popularsFilms)
+          }).catch((error) => {
+
+      console.error("Erro ao carregar filmes populares:", error);
+    }).finally(() => {    
+      this.loading = false;
+    })
+},
+loadPopularSeries() {
+    this.loading = true;  
+      getMostPopularSeries(1)
+      .then((data) =>{
+        this.popularsTV = data.results;
+        this.store.useSerieStore.addPopularsSeries(this.popularsTV);
+        this.verifyFavorites(this.popularsTV) 
+            }).catch ((error) => {
+        console.error("Erro ao carregar séries populares:", error);
+      }).finally(() =>{
+        this.loading = false;
+      })
+    },
+
+verifyFavorites(films : Film[]){
+  const filmsStore = useFilmsStore();
+  const serieStore = useSeriesStore();
+  
+  films.forEach(film => {
+        if(film.name === undefined){
+          const isFavoriteFilm = filmsStore.favoriteMovies.some(favorite => favorite.id === film.id);
+          if(!isFavoriteFilm){
+            film.favorite = false
+          }
+        }else{
+          const isFavoriteSeries = serieStore.favoriteSerie.some(favorite => favorite.id === film.id);
+        if(!isFavoriteSeries){
+          film.favorite = false
+        } 
+      }
+      console.log(film.favorite)
+    });
+},
+  }
+
 }
 
 </script>
