@@ -61,7 +61,7 @@
       </template>
 
       <template v-slot:item.favorite="{ item }">
-        <v-btn @click="toggleFavorite(item.id)" :color="item.favorite ? 'red' : 'grey'">
+        <v-btn @click="toggleFavorite(item)" :color="item.favorite ? 'red' : 'grey'">
           <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
         </v-btn>
       </template>
@@ -160,24 +160,16 @@ export default {
       return release_date.split('-').reverse().join('/');
     },
 
-    toggleFavorite(movieId: number) {
-  const movie = this.moviesAndSeries.find(m => m.id === movieId);
-  if (movie) {
-    movie.favorite = !movie.favorite; 
-    if (movie.favorite) {
-      if (movie.media_type === 'tv') {
-        this.store.useSeriesStore.setFavoriteSeries(movie);  
-      } else {
-        this.store.useFilmsStore.setFavoriteFilms(movie);  
-      }
-    } else {
-      if (movie.media_type === 'tv') {
-        this.store.useSeriesStore.removefavoriteSerie(movie);  
-      } else {
-        this.store.useFilmsStore.removefavoriteMovies(movie); 
-      }
+toggleFavorite(movieFavorite: Film) {
+  const movie = this.moviesAndSeries.find(m => m.id === movieFavorite.id);
+    if (movie) {
+      movie.favorite = !movie.favorite;
     }
-  }
+  if(movie && movie?.media_type  === 'tv'){
+    this.store.useSeriesStore.toggleFavorite(movieFavorite)
+  }else{
+    this.store.useFilmsStore.toggleFavorite(movieFavorite)
+  } 
 },
 
 

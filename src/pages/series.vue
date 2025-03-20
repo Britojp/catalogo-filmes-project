@@ -55,7 +55,7 @@
       </template>
 
       <template v-slot:item.favorite="{ item }">
-        <v-btn @click="toggleFavorite(item.id)" :color="item.favorite ? 'red' : 'grey'">
+        <v-btn @click="toggleFavorite(item)" :color="item.favorite ? 'red' : 'grey'">
           <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
         </v-btn>
       </template>
@@ -140,7 +140,7 @@ export default {
             this.Series = response.data.results;
             this.total_pages = response.data.total_pages;
             this.loadGenres();
-            this.store.useSeriesStore.addSerieForPage(this.currentPage, this.Series);
+            this.store.useSeriesStore.addSeriesForPage(this.currentPage, this.Series);
           })
           .catch((error) => {
             console.error('Erro ao carregar as séries populares:', error);
@@ -165,16 +165,13 @@ export default {
       return release_date.split('-').reverse().join('/');
     },
 
-    toggleFavorite(movieId: number) {
-      const movie = this.Series.find(m => m.id === movieId);
-      if (movie) {
-        movie.favorite = !movie.favorite;
-        this.store.useSeriesStore.favoriteSerie = {
-          ...this.store.useSeriesStore.favoriteSerie,
-          [this.currentPage]: this.Series.filter(film => film.favorite)
-        };
+    toggleFavorite(series: Film) {
+      const serie = this.Series.find(m => m.id === series.id);
+      if (serie) {
+       this.store.useSeriesStore.toggleFavorite(series)
       }
     },
+
 
     loadGenres() {
       this.Series = this.Series.map(film => {

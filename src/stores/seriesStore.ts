@@ -1,28 +1,31 @@
 import { defineStore } from 'pinia';
 import type Film from '@/types/types';
 import { getMostPopularSeries } from '@/services/api';
+import Series from '@/pages/series.vue';
 
 export const useSeriesStore = defineStore('seriesStore', {
   state() {
     return {
       allSerie: {} as Record<number, Film[]>,
-      favoriteSerie: new Set<number>(),  
-      favoriteSerieTemp: [] as Film[],   
+      favoriteSerie: [] as Film[],  
       popularsSeries : [] as Film[],
     };
   },
 
   actions: {
-    addSerieForPage(page: number, Serie: Film[]) {
-      Serie.forEach(serie => {
-        if (this.favoriteSerie.has(serie.id)) {
-          serie.favorite = true;
-        }
-      });
-
-      this.allSerie[page] = Serie;
-      this.removeSeries();
-    },
+   addSeriesForPage(page: number, series: Film[]) {
+       if (Array.isArray(this.favoriteSerie)) {
+         series.forEach(serie => {
+           if (this.favoriteSerie.some(favoriteSeries =>favoriteSeries.id === serie.id)) {
+             serie.favorite = true;
+           }
+         });
+       } else {
+         console.error('favoriteSerie is not an array:', this.favoriteSerie);
+         this.favoriteSerie = [];
+       }
+       this.allSerie[page] = series;
+     },
 
     removeSeries() {
       if (Object.keys(this.allSerie).length > 4) {
@@ -31,37 +34,29 @@ export const useSeriesStore = defineStore('seriesStore', {
       }
     },
 
-    setFavoriteSeries(serie: Film) {
-      this.favoriteSerie.add(serie.id); 
-
-      for (const page in this.allSerie) {
-        const serieToUpdate = this.allSerie[page].find((m: Film) => m.id === serie.id);
-        if (serieToUpdate) {
-          serieToUpdate.favorite = true;
-          break;
+    toggleFavorite(serie: Film){
+      for(const page in this.allSerie){
+        const serieToUpdate = this.allSerie[page].find((m:Film) => m.id === serie.id)
+        if(serieToUpdate){
+          serieToUpdate.favorite = !serieToUpdate.favorite;
         }
-      }
 
-      this.updateFavoriteSerie();
+        if(serieToUpdate?.favorite){
+          this.favoriteSerie.push(serieToUpdate);
+        }else{
+          const index = this.favoriteSerie.findIndex(favorite => favorite.id === serieToUpdate?.id);
+          if (index !== -1) {
+            this.favoriteSerie.splice(index, 1);
+          }
+        }
+
+      }
     },
 
-    removefavoriteSerie(serie: Film) {
-      this.favoriteSerie.delete(serie.id);  
-
-      for (const page in this.allSerie) {
-        const serieToUpdate = this.allSerie[page].find((m: Film) => m.id === serie.id);
-        if (serieToUpdate) {
-          serieToUpdate.favorite = false;
-          break;
-        }
-      }
-
-      this.updateFavoriteSerie();
-    },
     addPopularsSeries(series: Film[]) {
     
           series.forEach(serie => {
-            if (this.favoriteSerie.has(serie.id)) {
+            if (this.favoriteSerie.some(favorite => favorite.id === serie.id)) {
               serie.favorite = true;
             }
           });
@@ -70,15 +65,7 @@ export const useSeriesStore = defineStore('seriesStore', {
           this.removeSeries();
         },
 
-    updateFavoriteSerie() {
-      this.favoriteSerieTemp.forEach((serie) => {
-        if (serie.favorite) {
-          this.favoriteSerie.add(serie.id);
-        }
-      });
-
-      this.favoriteSerieTemp = this.favoriteSerieTemp.filter((serie) => this.favoriteSerie.has(serie.id));
-    },
+   
   },
 
   getters: {

@@ -55,7 +55,7 @@
       </template>
 
       <template v-slot:item.favorite="{ item }">
-        <v-btn @click="toggleFavorite(item.id)" :color="item.favorite ? 'red' : 'grey'">
+        <v-btn @click="toggleFavorite(item)" :color="item.favorite ? 'red' : 'grey'">
           <v-icon :icon="item.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
         </v-btn>
       </template>
@@ -137,6 +137,8 @@ export default {
             this.films = response.data.results;
             this.total_pages = response.data.total_pages;
             this.loadGenres();
+            this.films = this.films.map(film => ({ ...film, favorite: false }));
+            console.log(this.films)
             this.store.useFilmsStore.addMoviesForPage(this.currentPage, this.films);
           })
           .catch((error) => {
@@ -162,14 +164,10 @@ export default {
       return release_date.split('-').reverse().join('/');
     },
 
-    toggleFavorite(movieId: number) {
-      const movie = this.films.find(m => m.id === movieId);
+    toggleFavorite(movies: Film) {
+      const movie = this.films.find(m => m.id === movies.id);
       if (movie) {
-        movie.favorite = !movie.favorite;
-        this.store.useFilmsStore.favoriteMovies = {
-          ...this.store.useFilmsStore.favoriteMovies,
-          [this.currentPage]: this.films.filter(film => film.favorite)
-        };
+       this.store.useFilmsStore.toggleFavorite(movies)
       }
     },
 

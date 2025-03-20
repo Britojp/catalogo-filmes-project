@@ -5,28 +5,32 @@ export const useFilmsStore = defineStore('filmsStore', {
   state() {
     return {
       allMovies: {} as Record<number, Film[]>,
-      favoriteMovies: new Set<number>(),  
-      favoriteMoviesTemp: [] as Film[],   
+      favoriteMovies: [] as Film[],   
       popularsFilms : [] as Film[]
     };
   },
 
   actions: {
     addMoviesForPage(page: number, movies: Film[]) {
-
-      movies.forEach(movie => {
-        if (this.favoriteMovies.has(movie.id)) {
-          movie.favorite = true;
-        }
-      });
-
+      if (Array.isArray(this.favoriteMovies)) {
+        movies.forEach(movie => {
+          if (this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
+            movie.favorite = true;
+          }
+        });
+      } else {
+        console.error('favoriteMovies is not an array:', this.favoriteMovies);
+        this.favoriteMovies = [];
+      }
       this.allMovies[page] = movies;
     },
+    
+    
 
     addPopularFilms(movies: Film[]) {
 
       movies.forEach(movie => {
-        if (this.favoriteMovies.has(movie.id)) {
+        if (this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
           movie.favorite = true;
         }
       });
@@ -42,7 +46,7 @@ export const useFilmsStore = defineStore('filmsStore', {
     },
 
     setFavoriteFilms(movie: Film) {
-      this.favoriteMovies.add(movie.id); 
+      this.favoriteMovies.push(movie); 
 
       for (const page in this.allMovies) {
         const movieToUpdate = this.allMovies[page].find((m: Film) => m.id === movie.id);
@@ -52,11 +56,28 @@ export const useFilmsStore = defineStore('filmsStore', {
         }
       }
 
-      this.updateFavoriteMovies();
     },
+    toggleFavorite(Movies: Film){
+          for(const page in this.allMovies){
+            const MoviesToUpdate = this.allMovies[page].find((m:Film) => m.id === Movies.id)
+            if(MoviesToUpdate){
+              MoviesToUpdate.favorite = !MoviesToUpdate.favorite;
+            }
+    
+            if(MoviesToUpdate?.favorite){
+              this.favoriteMovies.push(MoviesToUpdate);
+            }else{
+              const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate?.id);
+              if (index !== -1) {
+                this.favoriteMovies.splice(index, 1);
+              }
+            }
+    
+          }
+        },
 
     removefavoriteMovies(movie: Film) {
-      this.favoriteMovies.delete(movie.id);  
+      this.favoriteMovies = this.favoriteMovies.filter(favoriteMovie => favoriteMovie.id !== movie.id);  
 
       for (const page in this.allMovies) {
         const movieToUpdate = this.allMovies[page].find((m: Film) => m.id === movie.id);
@@ -66,18 +87,9 @@ export const useFilmsStore = defineStore('filmsStore', {
         }
       }
 
-      this.updateFavoriteMovies();
     },
 
-    updateFavoriteMovies() {
-      this.favoriteMoviesTemp.forEach((movie) => {
-        if (movie.favorite) {
-          this.favoriteMovies.add(movie.id);
-        }
-      });
-
-      this.favoriteMoviesTemp = this.favoriteMoviesTemp.filter((movie) => this.favoriteMovies.has(movie.id));
-    },
+  
   },
 
   getters: {
