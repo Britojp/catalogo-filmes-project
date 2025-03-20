@@ -34,36 +34,41 @@ export const useSeriesStore = defineStore('seriesStore', {
       }
     },
 
-    toggleFavoriteNoPage(serie: Film){
-      serie.favorite = !serie.favorite
-      if(serie.favorite){
-        this.favoriteSerie.push(serie)
-      }else{
+    toggleFavorite(serie: Film) {
+      serie.favorite = !serie.favorite;
+    
+      if (serie.favorite) {
         const index = this.favoriteSerie.findIndex(favorite => favorite.id === serie.id);
-          if (index !== -1) {
-            this.favoriteSerie.splice(index, 1);
+        if (index === -1) {
+          this.favoriteSerie.push(serie);
+        }
+      } else {
+        const index = this.favoriteSerie.findIndex(favorite => favorite.id === serie.id);
+        if (index !== -1) {
+          this.favoriteSerie.splice(index, 1);
+        }
+      }
+    
+      for (const page in this.allSerie) {
+        const serieToUpdate = this.allSerie[page].find((m: Film) => m.id === serie.id);
+        if (serieToUpdate) {
+          serieToUpdate.favorite = serie.favorite;
+          if (serie.favorite) {
+            const index = this.favoriteSerie.findIndex(favorite => favorite.id === serieToUpdate.id);
+            if (index === -1) {
+              this.favoriteSerie.push(serieToUpdate);
+            }
+          } else {
+            const index = this.favoriteSerie.findIndex(favorite => favorite.id === serieToUpdate.id);
+            if (index !== -1) {
+              this.favoriteSerie.splice(index, 1);
+            }
           }
+        }
       }
     },
-
-    toggleFavorite(serie: Film){
-      for(const page in this.allSerie){
-        const serieToUpdate = this.allSerie[page].find((m:Film) => m.id === serie.id)
-        if(serieToUpdate){
-          serieToUpdate.favorite = !serieToUpdate.favorite;
-        }
-
-        if(serieToUpdate && serieToUpdate.favorite){
-          this.favoriteSerie.push(serieToUpdate);
-        }else{
-          const index = this.favoriteSerie.findIndex(favorite => favorite.id === serieToUpdate?.id);
-          if (index !== -1) {
-            this.favoriteSerie.splice(index, 1);
-          }
-        }
-
-      }
-    },
+    
+    
     addPopularsSeries(series: Film[]) {
     
       if (Array.isArray(this.favoriteSerie)) {

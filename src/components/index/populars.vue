@@ -171,9 +171,9 @@ export default {
       const isSeries = !!item.name;
 
       if (isMovie) {
-        filmsStore.toggleFavoriteNoPage(item);
+        filmsStore.toggleFavorite(item);
       } else if (isSeries) {
-        seriesStore.toggleFavoriteNoPage(item);
+        seriesStore.toggleFavorite(item);
       }
     },
   },

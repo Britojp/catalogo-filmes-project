@@ -229,15 +229,20 @@ export default {
       return release_date.split('-').reverse().join('/');
     },
 
-toggleFavorite(movieFavorite: Film) {
-  const movie = this.moviesAndSeries.find(m => m.id === movieFavorite.id);
+    toggleFavorite(item: Film) {
+      const seriesStore = useSeriesStore();
+      const filmsStore = useFilmsStore();
 
-    if(movie && movie?.media_type  === 'tv'){
-      this.store.useSeriesStore.toggleFavoriteNoPage(movieFavorite)
-    }else{
-      this.store.useFilmsStore.toggleFavoriteNoPage(movieFavorite)
-    } 
-  },
+      const isMovie = !!item.title;
+      const isSeries = !!item.name;
+
+      
+      if (isMovie) {
+        filmsStore.toggleFavorite(item);
+      } else if (isSeries) {
+        seriesStore.toggleFavorite(item);
+      }
+    },
 
 
     loadGenres() {

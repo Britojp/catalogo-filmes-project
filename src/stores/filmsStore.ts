@@ -33,36 +33,39 @@ export const useFilmsStore = defineStore('filmsStore', {
     },
 
     
-        toggleFavoriteNoPage(Movies: Film){
-          
-          Movies.favorite = !Movies.favorite
-          if(Movies.favorite){
-            this.favoriteMovies.push(Movies)
-          }else{
-            const index = this.favoriteMovies.findIndex(favorite => favorite.id === Movies.id);
-              if (index !== -1) {
-                this.favoriteMovies.splice(index, 1);
-              }
-          }
-        },
+  toggleFavorite(Movies: Film) {
+      Movies.favorite = !Movies.favorite;
     
-        toggleFavorite(Movies: Film){
-              for(const page in this.allMovies){
-                const MoviesToUpdate = this.allMovies[page].find((m:Film) => m.id === Movies.id)
-                if(MoviesToUpdate){
-                  MoviesToUpdate.favorite = !MoviesToUpdate.favorite;
-               }
-                if(MoviesToUpdate?.favorite){
-                  this.favoriteMovies.push(MoviesToUpdate);
-                }else{
-                  const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate?.id);
-                  if (index !== -1) {
-                    this.favoriteMovies.splice(index, 1);
-                  }
-                }
-        
-              }
-            },
+      if (Movies.favorite) {
+        const index = this.favoriteMovies.findIndex(favorite => favorite.id === Movies.id);
+        if (index === -1) {
+          this.favoriteMovies.push(Movies);
+        }
+      } else {
+        const index = this.favoriteMovies.findIndex(favorite => favorite.id === Movies.id);
+        if (index !== -1) {
+          this.favoriteMovies.splice(index, 1);
+        }
+      }
+    
+      for (const page in this.allMovies) {
+        const MoviesToUpdate = this.allMovies[page].find((m: Film) => m.id === Movies.id);
+        if (MoviesToUpdate) {
+          MoviesToUpdate.favorite = Movies.favorite;
+          if (Movies.favorite) {
+            const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate.id);
+            if (index === -1) {
+              this.favoriteMovies.push(MoviesToUpdate);
+            }
+          } else {
+            const index = this.favoriteMovies.findIndex(favorite => favorite.id === MoviesToUpdate.id);
+            if (index !== -1) {
+              this.favoriteMovies.splice(index, 1);
+            }
+          }
+        }
+      }
+    },
 
         addPopularFilms(movies: Film[]) {
           if (Array.isArray(this.favoriteMovies)) {
