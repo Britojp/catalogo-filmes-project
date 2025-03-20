@@ -12,6 +12,9 @@ export default interface Film {
   vote_average: number;
   favorite: boolean;
   poster_path: string;
+  popularity: string;
+  vote_count: number;
+  adult: boolean;
 }
 
 

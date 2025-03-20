@@ -26,6 +26,16 @@
                 half-increments
                 readonly
               />
+
+              <v-card-subtitle class="text-subtitle-1">
+                <strong>Conteúdo adulto:</strong> {{ selectedFilmOrSeries.adult }}
+              </v-card-subtitle>
+              <v-card-subtitle class="text-subtitle-1">
+                <strong>Popularidade:</strong> {{ Math.round(selectedFilmOrSeries.popularity) }}
+              </v-card-subtitle>
+              <v-card-subtitle class="text-subtitle-1">
+                <strong>Votos:</strong> {{ selectedFilmOrSeries.vote_count }}
+              </v-card-subtitle>
                         
               <v-chip-group column>
                 <v-chip
