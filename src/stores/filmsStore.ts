@@ -25,6 +25,18 @@ export const useFilmsStore = defineStore('filmsStore', {
       this.allMovies[page] = movies;
     },
     
+        toggleFavoriteNoPage(Movies: Film){
+          
+          Movies.favorite = !Movies.favorite
+          if(Movies.favorite){
+            this.favoriteMovies.push(Movies)
+          }else{
+            const index = this.favoriteMovies.findIndex(favorite => favorite.id === Movies.id);
+              if (index !== -1) {
+                this.favoriteMovies.splice(index, 1);
+              }
+          }
+        },
     
 
     addPopularFilms(movies: Film[]) {
@@ -46,24 +58,25 @@ export const useFilmsStore = defineStore('filmsStore', {
     },
 
     setFavoriteFilms(movie: Film) {
+      if (!this.favoriteMovies.some(favoriteMovie => favoriteMovie.id === movie.id)) {
       this.favoriteMovies.push(movie); 
 
       for (const page in this.allMovies) {
         const movieToUpdate = this.allMovies[page].find((m: Film) => m.id === movie.id);
         if (movieToUpdate) {
-          movieToUpdate.favorite = true;
-          break;
+        movieToUpdate.favorite = true;
+        break;
         }
       }
-
+      }
     },
+    
     toggleFavorite(Movies: Film){
           for(const page in this.allMovies){
             const MoviesToUpdate = this.allMovies[page].find((m:Film) => m.id === Movies.id)
             if(MoviesToUpdate){
               MoviesToUpdate.favorite = !MoviesToUpdate.favorite;
-            }
-    
+           }
             if(MoviesToUpdate?.favorite){
               this.favoriteMovies.push(MoviesToUpdate);
             }else{

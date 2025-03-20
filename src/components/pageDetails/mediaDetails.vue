@@ -22,7 +22,7 @@
                             <v-card-text>
                                 <p class="text-justify text-body-1"><strong>Overview:</strong> {{ selectedFilmOrSeries.overview }}</p>
 
-                                <v-btn @click="toggleFavorite(selectedFilmOrSeries.id)" :color="selectedFilmOrSeries.favorite ? 'red' : 'grey'">
+                                <v-btn @click="toggleFavorite(selectedFilmOrSeries)" :color="selectedFilmOrSeries.favorite ? 'red' : 'grey'">
                                 <v-icon :icon="selectedFilmOrSeries.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
                                 </v-btn>
                                 
@@ -73,29 +73,20 @@ export default {
       return release_date.split('-').reverse().join('/');
     },
     
-    toggleFavorite(movieId: number) {
+    toggleFavorite(movieFavorite: Film) {
     const seriesStore = useSeriesStore();
     const filmsStore = useFilmsStore();
     this.moviesAndSeries = [...seriesStore.getAllSerie(), ...filmsStore.getAllMovies()];
 
-
-    const movie = this.moviesAndSeries.find(m => m.id === movieId);
+    const movie = this.moviesAndSeries.find(m => m.id === movieFavorite.id);
     if (movie) {
-      movie.favorite = !movie.favorite; 
-      if (movie.favorite) {
-          if (movie.media_type === 'tv') {
-              seriesStore.setFavoriteSeries(movie);  
-          } else {
-              filmsStore.setFavoriteFilms(movie);  
-          }
-        } else {
-            if (movie.media_type === 'tv') {
-                seriesStore.removefavoriteSerie(movie);  
-            } else {
-                filmsStore.removefavoriteMovies(movie); 
-            }
-      }
-  }
+      movie.favorite = !movie.favorite;
+    }
+  if(movie && movie?.media_type  === 'tv'){
+    seriesStore.toggleFavoriteNoPage(movieFavorite)
+  }else{
+    filmsStore.toggleFavoriteNoPage(movieFavorite)
+  } 
 },
     },
 

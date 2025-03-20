@@ -35,6 +35,7 @@
       hide-default-footer 
       :headers="headers"
       :items="moviesAndSeries"
+      :items-per-page="-1"
       density="compact" item-key="title">
     
       <template v-slot:item.title="{ item }">
@@ -82,6 +83,7 @@
         append-icon="mdi-open-in-new">
       Ver mais
        </v-btn>
+    
         </template>
 
 

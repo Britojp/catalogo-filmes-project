@@ -15,10 +15,7 @@ class="align-center justify-center container" scrim="#000000"
               <p>
                 {{ expanded.has(items.id) ? items.overview : truncatedText(items) }}
               </p>
-              <v-btn v-if="isLongText(items)"
-variant="text" color="primary" @click="toggleExpand(items)">
-                {{ expanded.has(items.id) ? "Ver menos" : "Ver mais" }}
-              </v-btn>
+              
             </v-card-text>
             <v-card-title>
               <v-rating :model-value="calculateRate(items)"
@@ -26,6 +23,19 @@ class="me-2" color="orange" density="compact"
                 half-increments
 readonly />
             </v-card-title>
+              <v-btn variant="plain"
+                        :to="`/moreDetails/${items.id}`"
+                        @click="addSelectedMedia(items)"
+                        >
+                        <v-icon>
+                        mdi-open-in-new
+                      </v-icon>
+                    </v-btn>
+    
+                   <v-btn variant="plain" @click="toggleFavorite(items)" :color="items.favorite ? 'red' : 'grey'">
+                       
+                       <v-icon :icon="items.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
+                   </v-btn>
           </v-overlay>
         </v-card>
       </v-hover>
@@ -36,6 +46,9 @@ readonly />
 <script lang="ts">
 import type Film from '@/types/types';
 import {useSearchStore} from '@/stores/searchStore'
+import { useSeriesStore } from '@/stores/seriesStore';
+import { useFilmsStore } from '@/stores/filmsStore';
+import { useDetailsStore } from '@/stores/detailsStore';
 
 export default {
   name: 'ShowSearch',
@@ -67,6 +80,23 @@ export default {
       } else {
         this.expanded.add(items.id);
       }
+    },
+    toggleFavorite(movieFavorite: Film) {
+    const seriesStore = useSeriesStore();
+    const filmsStore = useFilmsStore();
+
+    const movie = this.films.find(m => m.id === movieFavorite.id);
+ 
+    if(movie && movie?.media_type  === 'tv'){
+      seriesStore.toggleFavoriteNoPage(movieFavorite)
+      console.log(movieFavorite.favorite)
+    }else{
+      filmsStore.toggleFavoriteNoPage(movieFavorite)
+    } 
+},
+addSelectedMedia(media : Film){
+    const detailsStore = useDetailsStore();  
+    detailsStore.setSelectedMedia(media)
     },
   },
   computed: {

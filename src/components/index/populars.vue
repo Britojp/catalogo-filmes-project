@@ -69,7 +69,7 @@
                   </v-icon>
                 </v-btn>
 
-                <v-btn variant="plain" @click="toggleFavorite(items.id)" :color="items.favorite ? 'red' : 'grey'">
+                <v-btn variant="plain" @click="toggleFavorite(items)" :color="items.favorite ? 'red' : 'grey'">
                     
                     <v-icon :icon="items.favorite ? 'mdi-heart' : 'mdi-heart-outline'"></v-icon>
                 </v-btn>
@@ -149,31 +149,24 @@ export default {
     addSelectedMedia(media : Film){
       useDetailsStore().setSelectedMedia(media)
     },
-    toggleFavorite(movieId: number) {
+    toggleFavorite(movieFavorite: Film) {
     const seriesStore = useSeriesStore();
     const filmsStore = useFilmsStore();
     this.moviesAndSeries = [...seriesStore.getAllSerie(), ...filmsStore.getAllMovies()];
 
-    const movie = this.moviesAndSeries.find(m => m.id === movieId);
+    const movie = this.moviesAndSeries.find(m => m.id === movieFavorite.id);
     if (movie) {
-      movie.favorite = !movie.favorite; 
-      if (movie.favorite) {
-          if (movie.media_type === 'tv') {
-              seriesStore.setFavoriteSeries(movie);  
-          } else {
-              filmsStore.setFavoriteFilms(movie);  
-          }
-        } else {
-            if (movie.media_type === 'tv') {
-                seriesStore.removefavoriteSerie(movie);  
-            } else {
-                filmsStore.removefavoriteMovies(movie); 
-            }
-      }
-  }
+      movie.favorite = !movie.favorite;
+    }
+  if(movie && movie?.media_type  === 'tv'){
+    seriesStore.toggleFavoriteNoPage(movieFavorite)
+  }else{
+    filmsStore.toggleFavoriteNoPage(movieFavorite)
+  } 
+},
+
 },
     
-  },
 };
 </script>
 
