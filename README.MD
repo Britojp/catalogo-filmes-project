@@ -2,33 +2,28 @@
 
 Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requisições HTTP e **Pinia** para gerenciar o estado global da aplicação. O objetivo da aplicação é buscar filmes da API do TMDB (The Movie Database) e exibir as informações dos filmes na interface.
 
+
+
+
 ## Estrutura do Sistema  
 
 ### **Tela Inicial**  
 - Exibe opções de busca por filmes e séries.  
 - Realiza requisições à API para obter os resultados.  
 - Usuário pode selecionar itens como favoritos.  
-  **Busca e Filtragem**  
+
+###  ***Busca e Filtragem***  
 - Busca de filmes e séries através de uma API.  
 - Possibilidade de filtrar por gênero, título, data de lançamento e popularidade.  
- 
- **Abaixo acompanhe o fluxo da tela inicial**
-![Tela Inicial](fluxogramas/Populars.png)  
 
 ### **Detalhes de todos os Filme/Série**  
 - Tela com mais informações sobre todos os filme ou série.  
 - Exibição baseada nos dados obtidos pela API.  
-
- **Abaixo acompanhe o fluxo das telas de Filmes e Séries**
-![Tela Inicial](fluxogramas/FilmsSeries.png)  
-
+ 
 
 ### **Detalhes de um filme/série específico**  
 - Tela com mais informações sobre o filme ou série escolhido/a.  
 - Possibilidade de colocar como favorito  
-
- **Abaixo acompanhe o fluxo da tela de mais detalhes**
-![Tela Inicial](fluxogramas/moreDetails.png)  
 
 
 ### **Armazenamento de Favoritos**  
@@ -53,67 +48,6 @@ Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requis
 - Mostra todos os filmes/séries em uma só tela
 - Possibilidade de filtros
 
-## Organização de pastas
-```bash
-catalogo-filmes-project
-├── 📂 fluxogramas          
-│   ├── FilmsSeries.png
-│   ├── moreDetails.png
-│   ├── Populars.png
-│
-├── 📂 public               
-│   ├── favicon.ico
-│   ├── index.html
-│
-├── 📂 src                  
-│   ├── 📂 assets           
-│   │   ├── 📂 images
-│   │   │   ├── bg-image.jpg
-│   │   ├── logo.svg
-│   │
-│   ├── 📂 components       
-│   │   ├── 📂 index       
-│   │   │   ├── populars.vue
-│   │   │   ├── popularsSection.vue
-│   │   │   ├── showSearch.vue
-│   │   ├── pageDetails.vue
-│   │   ├── footer.vue
-│   │   ├── heropage.vue
-│   │   ├── navbar.vue
-│   │
-│   ├── 📂 pages           
-│   │   ├── Home.vue
-│   │   ├── Details.vue
-│   │   ├── Search.vue
-│   │
-│   ├── 📂 plugins          
-│   │   ├── vuetify.js
-│   │   ├── axios.js
-│   │
-│   ├── 📂 router           
-│   │   ├── index.ts
-│   │
-│   ├── 📂 services         
-│   │   ├── api.ts
-│   │
-│   ├── 📂 stores           
-│   │   ├── detailsStore.ts
-│   │   ├── filmsStore.ts
-│   │   ├── searchStore.ts
-│   │   ├── seriesStore.ts
-│   │
-│   ├── 📂 styles           
-│   │   ├── settings.scss
-│   │   ├── global.scss
-│   │
-│   ├── 📂 types            
-│   │   ├── types.ts
-│   │
-│   ├── App.vue            
-│   ├── main.ts             
-```
-
-
 
 ## Pré-requisitos
 
@@ -126,7 +60,7 @@ Antes de rodar o projeto, você precisa ter as seguintes ferramentas instaladas:
 ### 1. Clone o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/vue-movie-finder.git
+git clone https://github.com/britojp/catalogo-films-project.git
 ```
 
 ### 2. Instalar as dependências

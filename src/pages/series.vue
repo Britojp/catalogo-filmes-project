@@ -47,7 +47,7 @@
     <v-data-table
       v-model:search="search" 
       :no-data-text="noDataMessage"
-      :filter-keys="['title']"
+      :filter-keys="['name']"
       hide-default-footer 
       :headers="headers"
       :items="Series"
