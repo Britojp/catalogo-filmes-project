@@ -54,7 +54,8 @@ Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requis
 - Possibilidade de filtros
 
 ## Organização de pastas
-📦 catalogo-filmes-project
+```bash
+catalogo-filmes-project
 ├── 📂 fluxogramas          
 │   ├── FilmsSeries.png
 │   ├── moreDetails.png
@@ -110,7 +111,7 @@ Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requis
 │   │
 │   ├── App.vue            
 │   ├── main.ts             
-
+```
 
 
 
