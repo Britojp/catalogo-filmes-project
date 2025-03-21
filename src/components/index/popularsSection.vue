@@ -1,15 +1,13 @@
 <template>
-  <template
-    v-for="n in 4"
-    v-if="loading"
-    :key="n"
-  >
+  <template v-if="loading">
     <v-row class="my-4">
       <v-col
         v-for="n in 4"
         :key="n"
         cols="12"
-        md="3"
+        sm="12"
+        md="4"
+        lg="3"
         class="pa-2"
       >
         <v-skeleton-loader
@@ -27,14 +25,23 @@
       title="Filmes Famosos"
       description="Confira os filmes mais populares do momento"
       :populars="popularsFilms"
+      mobile-view
+      show-title
+      show-rating
+      show-buttons
     />
     <Populars
       title="Séries Famosas"
       description="Descubra as séries mais assistidas atualmente"
       :populars="popularsTV"
+      mobile-view
+      show-title
+      show-rating
+      show-buttons
     />
   </template>
 </template>
+
 
 
 

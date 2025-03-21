@@ -37,7 +37,7 @@
                     v-bind="props"
                   >
                     <v-img
-                      :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.poster_path}` : 'https://cdn.vuetifyjs.com/images/cards/forest-art.jpg'"
+                      :src="items.poster_path ? `https://image.tmdb.org/t/p/w500${items.poster_path}` : 'https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'"
                     />
                     <v-overlay
                       :model-value="!!isHovering"

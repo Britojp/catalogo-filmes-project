@@ -1,6 +1,6 @@
 <template>
   <v-card flat v-if="!isLoading">
-    <v-card-title class="d-flex align-center pe-2">
+    <v-card-title class="d-flex align-center pe-2 flex-wrap">
       <v-select 
         prepend-inner-icon="mdi-filter"
         label="Filtrar por gênero" 
@@ -15,16 +15,18 @@
         density="compact" 
         :menu-props="{ maxHeight: '200px' }" 
         chips
-        :style="{ width: '300px' }">
+        :style="{ width: '100%', maxWidth: '300px' }">
       </v-select>
 
-      <v-btn @click="filteredFilms()" color="primary">
+      <v-btn @click="filteredFilms()" color="primary" class="mx-2">
         Procurar
       </v-btn>
 
       <v-spacer></v-spacer>
+
       <v-text-field v-model="search" density="compact" label="Pesquisar" prepend-inner-icon="mdi-magnify"
-        variant="solo-filled" flat hide-details single-line class="mx-2"></v-text-field>
+        variant="solo-filled" flat hide-details single-line class="mx-2" :style="{ width: '100%', maxWidth: '300px' }">
+      </v-text-field>
     </v-card-title>
 
     <v-divider></v-divider>
@@ -36,6 +38,7 @@
       :headers="headers"
       :items="films"
       density="compact" item-key="title" items-per-page="20">
+      
       <template v-slot:item.genres="{ item }">
         <v-chip-group column>
           <v-chip v-for="(genre, index) in item.genres" :key="index" class="ma-1" color="primary" text-color="white" variant="outlined" :disabled="true">
@@ -60,15 +63,13 @@
         </v-btn>
       </template>
 
-      
-        <template v-slot:item.id="{ item }">
+      <template v-slot:item.id="{ item }">
         <v-btn :to="`/moreDetails/${item.id}`"
         @click="addSelectedMedia(item)"
         append-icon="mdi-open-in-new">
-      Ver mais
-       </v-btn>
-        </template>
-
+          Ver mais
+        </v-btn>
+      </template>
 
       <template v-slot:item.release_date="{ item }">
         <p>{{ converterDate(item.release_date) }}</p>
@@ -86,6 +87,7 @@
     </v-row>
   </v-container>
 </template>
+
 
 <script lang="ts">
 import { getAllMovies } from '@/services/api';

@@ -3,9 +3,9 @@
     <v-col
       v-for="items in films"
       :key="items.id"
-      cols="2"
-      md="2"
-      sm="2"
+      cols="12" 
+      sm="6" 
+      md="4" 
       lg="2"
     >
       <v-hover v-slot="{ isHovering, props }">
@@ -51,7 +51,7 @@
                 mdi-open-in-new
               </v-icon>
             </v-btn>
-    
+      
             <v-btn
               variant="plain"
               :color="items.favorite ? 'red' : 'grey'"
