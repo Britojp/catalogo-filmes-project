@@ -25,5 +25,6 @@ export const useDetailsStore = defineStore('detailsStore', {
 
   },
 
-
+  
+  
 });

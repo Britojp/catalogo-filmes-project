@@ -165,7 +165,7 @@ export default {
         { title: 'Tipo', align: 'center' as const, sortable: true, key: 'media_type' },
         { title: 'Nota popular', align: 'center' as const, key: 'vote_average' },
         { title: 'Favorito', align: 'center' as const, key: 'favorite' },
-        {title: 'Ver mais', align:'center' as const, key: 'id'},
+        {title: 'Ver mais', align:'center' as const, sortable: false,key: 'id'},
       ],
       SeriesGenders: [
         ...genresMoviesDB.map(genre => ({ id: genre.id, name: genre.name })),
