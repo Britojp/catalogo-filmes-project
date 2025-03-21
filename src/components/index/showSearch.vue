@@ -24,7 +24,7 @@
             scrim="#000000"
             contained
           >
-            <v-card-text>
+            <v-card-text >
               <h2 class="text-h6 text-primary">
                 {{ items.title || items.name }}
               </h2>
@@ -99,14 +99,10 @@ export default {
       deep: true
     }
   },
-  mounted() {
-    this.loadFilms();
 
-  },
+
   methods: {
-    loadFilms() {
-     this.store.searchMoviesAndSeries;
-    },
+    
     isLongText(items: Film) {
       return items.overview.split(" ").length > 20;
     },

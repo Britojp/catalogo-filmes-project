@@ -18,7 +18,6 @@ export const getMostPopularMovies = async (page: number = 1) => {
                 page
             }
         });
-        console.log('chamou api films')
         return response.data;
         
         } catch (error) {
@@ -35,7 +34,6 @@ export const getMostPopularSeries = async (page: number = 1) => {
         }
     });
     
-    console.log('chamou api series')
     return response.data;
     } catch (error) {
         console.error('Erro ao buscar séries populares:', error);
@@ -71,7 +69,6 @@ export const searchMoviesAndSeries = async (query: string, page: number = 1) => 
       }
     });
 
-    console.log("Resposta da API de Busca:", response.data);
 
     return {
       data: response.data
@@ -90,7 +87,6 @@ export const allMoviesAndSeries = async (page: number = 1) => {
       }
     });
 
-    console.log("Resposta da API de Busca:", response.data);
 
     return {
       data: response.data

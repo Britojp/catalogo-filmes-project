@@ -53,6 +53,67 @@ Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requis
 - Mostra todos os filmes/séries em uma só tela
 - Possibilidade de filtros
 
+## Organização de pastas
+📦 catalogo-filmes-project
+├── 📂 fluxogramas          
+│   ├── FilmsSeries.png
+│   ├── moreDetails.png
+│   ├── Populars.png
+│
+├── 📂 public               
+│   ├── favicon.ico
+│   ├── index.html
+│
+├── 📂 src                  
+│   ├── 📂 assets           
+│   │   ├── 📂 images
+│   │   │   ├── bg-image.jpg
+│   │   ├── logo.svg
+│   │
+│   ├── 📂 components       
+│   │   ├── 📂 index       
+│   │   │   ├── populars.vue
+│   │   │   ├── popularsSection.vue
+│   │   │   ├── showSearch.vue
+│   │   ├── pageDetails.vue
+│   │   ├── footer.vue
+│   │   ├── heropage.vue
+│   │   ├── navbar.vue
+│   │
+│   ├── 📂 pages           
+│   │   ├── Home.vue
+│   │   ├── Details.vue
+│   │   ├── Search.vue
+│   │
+│   ├── 📂 plugins          
+│   │   ├── vuetify.js
+│   │   ├── axios.js
+│   │
+│   ├── 📂 router           
+│   │   ├── index.ts
+│   │
+│   ├── 📂 services         
+│   │   ├── api.ts
+│   │
+│   ├── 📂 stores           
+│   │   ├── detailsStore.ts
+│   │   ├── filmsStore.ts
+│   │   ├── searchStore.ts
+│   │   ├── seriesStore.ts
+│   │
+│   ├── 📂 styles           
+│   │   ├── settings.scss
+│   │   ├── global.scss
+│   │
+│   ├── 📂 types            
+│   │   ├── types.ts
+│   │
+│   ├── App.vue            
+│   ├── main.ts             
+
+
+
+
 ## Pré-requisitos
 
 Antes de rodar o projeto, você precisa ter as seguintes ferramentas instaladas:

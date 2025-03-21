@@ -9,7 +9,7 @@
             class="d-flex justify-center"
           >
             <v-img
-              :src="`https://image.tmdb.org/t/p/w500${selectedFilmOrSeries.poster_path}`"
+            :src="selectedFilmOrSeries.poster_path ? `https://image.tmdb.org/t/p/w500${selectedFilmOrSeries.poster_path}` : 'https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'"  
               alt="Movie poster"
               height="400px"
               class="rounded-lg shadow-lg"
@@ -21,7 +21,7 @@
             md="8"
           >
             <v-card class="d-flex flex-column align-center pa-4 rounded-lg shadow-lg">
-              <v-card-title class="text-h2 font-weight-bold text-center mb-3">
+              <v-card-title class="text-h2 font-weight-bold text-center mb-3 text-no-wrap">
                 {{ selectedFilmOrSeries.title || selectedFilmOrSeries.name }}
               </v-card-title>
 
@@ -96,16 +96,20 @@
       </v-col>
     </v-row>
 
-    <v-row class="mt-4">
+    <v-row class="mt-4 justify-center">
       <v-col
         cols="12"
         sm="6"
         md="4"
+        v-if="selectedFilmOrSeries.backdrop_path"
       >
+        <v-card-subtitle class="text-center">
+          Cena de {{ selectedFilmOrSeries.name || selectedFilmOrSeries.title }} que você pode gostar
+        </v-card-subtitle>
         <v-img
           :src="`https://image.tmdb.org/t/p/w500${selectedFilmOrSeries.backdrop_path}`"
           alt="Scene image"
-          class="rounded-lg shadow-lg"
+          class="rounded-lg shadow-lg mx-auto d-block"
           height="250px"
         />
       </v-col>

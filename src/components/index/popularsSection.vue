@@ -118,7 +118,6 @@ verifyFavorites(films : Film[]){
           film.favorite = false
         } 
       }
-      console.log(film.favorite)
     });
 },
   }

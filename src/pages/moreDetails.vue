@@ -1,6 +1,6 @@
 <template>
-    <MediaDetails :selected-film-or-series="filmOrSerie"></MediaDetails>
-  </template>
+  <MediaDetails :selected-film-or-series="filmOrSerie" />
+</template>
   
   <script lang="ts">
   import MediaDetails from '@/components/pageDetails/mediaDetails.vue';
@@ -24,18 +24,18 @@
       },
     },
   
-    methods: {
-      loadMediaDetails() {
-        this.filmOrSerie = this.store.getSelectedMedia();
-      },
-    },
-  
     watch: {
       filmOrSerie: 'loadMediaDetails',
     },
   
     mounted() {
       this.loadMediaDetails();
+    },
+  
+    methods: {
+      loadMediaDetails() {
+        this.filmOrSerie = this.store.getSelectedMedia();
+      },
     },
   };
   </script>
