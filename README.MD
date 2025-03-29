@@ -2,33 +2,41 @@
 
 Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requisições HTTP e **Pinia** para gerenciar o estado global da aplicação. O objetivo da aplicação é buscar filmes da API do TMDB (The Movie Database) e exibir as informações dos filmes na interface.
 
+![](./docs//gravacao/resumoaplicacao.gif)
 
+## Breve esquema da aplicação
 
+![](./docs/fluxogramas/FilmsSeries.png)
+![](./docs/fluxogramas/moreDetails.png)
+![](./docs/fluxogramas/Populars.png)
 
-## Estrutura do Sistema  
+## Estrutura do Sistema
 
-### **Tela Inicial**  
-- Exibe opções de busca por filmes e séries.  
-- Realiza requisições à API para obter os resultados.  
-- Usuário pode selecionar itens como favoritos.  
+### **Tela Inicial**
 
-###  ***Busca e Filtragem***  
-- Busca de filmes e séries através de uma API.  
-- Possibilidade de filtrar por gênero, título, data de lançamento e popularidade.  
+- Exibe opções de busca por filmes e séries.
+- Realiza requisições à API para obter os resultados.
+- Usuário pode selecionar itens como favoritos.
 
-### **Detalhes de todos os Filme/Série**  
-- Tela com mais informações sobre todos os filme ou série.  
-- Exibição baseada nos dados obtidos pela API.  
- 
+### **_Busca e Filtragem_**
 
-### **Detalhes de um filme/série específico**  
-- Tela com mais informações sobre o filme ou série escolhido/a.  
-- Possibilidade de colocar como favorito  
+- Busca de filmes e séries através de uma API.
+- Possibilidade de filtrar por gênero, título, data de lançamento e popularidade.
 
+### **Detalhes de todos os Filme/Série**
 
-### **Armazenamento de Favoritos**  
-- Os favoritos são armazenados no `filmsStore`,`seriesStore`, `searchStore` e `detailsStore`.  
-- O sistema mantém um histórico limitado, priorizando os útlimos itens acessados.  
+- Tela com mais informações sobre todos os filme ou série.
+- Exibição baseada nos dados obtidos pela API.
+
+### **Detalhes de um filme/série específico**
+
+- Tela com mais informações sobre o filme ou série escolhido/a.
+- Possibilidade de colocar como favorito
+
+### **Armazenamento de Favoritos**
+
+- Os favoritos são armazenados no `filmsStore`,`seriesStore`, `searchStore` e `detailsStore`.
+- O sistema mantém um histórico limitado, priorizando os útlimos itens acessados.
 - Manutenção de memória
 
 ## Tecnologias Utilizadas
@@ -47,7 +55,6 @@ Este é uma aplicação em **Vue.js** que utiliza **Axios** para realizar requis
 - Integra a possibilidade de favorito em todas as telas
 - Mostra todos os filmes/séries em uma só tela
 - Possibilidade de filtros
-
 
 ## Pré-requisitos
 
