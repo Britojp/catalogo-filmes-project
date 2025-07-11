@@ -4,12 +4,13 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --fix"
+  "dev": "vite",
+  "preview": "vite preview",
+  "lint": "eslint . --fix",
+  "type-check": "vue-tsc --build --force",
+  "build-only": "vite build",
+  "build": "run-p type-check build-only",
+  "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
@@ -37,6 +38,7 @@
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^9.14.0",
     "eslint-plugin-vue": "^9.30.0",
+    "gh-pages": "^6.3.0",
     "npm-run-all2": "^7.0.1",
     "sass": "1.77.8",
     "sass-embedded": "^1.77.8",

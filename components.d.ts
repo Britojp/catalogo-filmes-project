@@ -7,21 +7,11 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AllFilmsSeries: typeof import('./src/components/filmsSeries/allFilmsSeries.vue')['default']
-    FilmsOrSeriesComponent: typeof import('./src/components/filmsSeries/filmsOrSeriesComponent.vue')['default']
-    FilmsSection: typeof import('./src/components/index/filmsSection.vue')['default']
-    FilmsSectionEdit: typeof import('./src/components/index/filmsSectionEdit.vue')['default']
-    FilmsSectionTest: typeof import('./src/components/index/filmsSectionTest.vue')['default']
     Footer: typeof import('./src/components/footer.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Heropage: typeof import('./src/components/heropage.vue')['default']
     MediaDetails: typeof import('./src/components/pageDetails/mediaDetails.vue')['default']
-    MoveDetails: typeof import('./src/components/papeDetails/moveDetails.vue')['default']
-    MovieDetails: typeof import('./src/components/pageDetails/movieDetails.vue')['default']
     Navbar: typeof import('./src/components/navbar.vue')['default']
-    PopularFilms: typeof import('./src/components/index/popularFilms.vue')['default']
     Populars: typeof import('./src/components/index/populars.vue')['default']
-    PopularSeries: typeof import('./src/components/index/popularSeries.vue')['default']
     PopularsSection: typeof import('./src/components/index/popularsSection.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
